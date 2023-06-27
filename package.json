@@ -13,24 +13,25 @@
 	"author": "",
 	"license": "MIT",
 	"devDependencies": {
+		"@types/lodash.throttle": "^4.1.7",
 		"@types/node": "16.11.6",
 		"@types/react": "18.2.14",
 		"@types/react-dom": "18.2.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
+		"autoprefixer": "10.4.14",
 		"builtin-modules": "3.3.0",
 		"esbuild": "0.17.3",
 		"esbuild-sass-plugin": "2.10.0",
 		"nanoid": "4.0.0",
 		"obsidian": "latest",
+		"postcss": "8.4.24",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-scripts": "5.0.1",
 		"sass": "1.63.6",
 		"tslib": "2.4.0",
-		"typescript": "4.9.4",
-		"autoprefixer": "10.4.14",
-		"postcss": "8.4.24"
+		"typescript": "4.9.4"
 	},
 	"dependencies": {
 		"@handraw/excalidraw": "1.0.0-alpha.2",

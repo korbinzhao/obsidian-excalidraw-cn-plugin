@@ -8,6 +8,8 @@ import { ExcalidrawDataSource } from './excalidraw-app/src/App';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
 
+const DEFAULT_DATA = '{}';
+
 export class ExcalidrawCnView extends TextFileView {
     constructor(leaf: WorkspaceLeaf) {
         super(leaf);
@@ -15,9 +17,8 @@ export class ExcalidrawCnView extends TextFileView {
 
     root: Root;
 
-    data: string;
-    requestSave: () => void;
-
+    data: string = DEFAULT_DATA;
+   
     file: TFile;
 
     getViewType() {
@@ -61,10 +62,12 @@ export class ExcalidrawCnView extends TextFileView {
         return this.data;
     }
 
-    setViewData(data: string, clear: boolean = false): void {
+    setViewData(data: string = DEFAULT_DATA, clear: boolean = false): void {
         this.data = data;
 
-        this.app.vault.modify(this.file, data)
+        this.app.vault.modify(this.file, data);
+
+        console.log('--- setViewData --', data.length);
 
         if (clear) {
             this.clear();
@@ -79,7 +82,7 @@ export class ExcalidrawCnView extends TextFileView {
 
         const dataSource = await this.app.vault.process(file, data => data);
 
-        this.data = dataSource;
+        this.data = dataSource || DEFAULT_DATA;
 
         this.root.render(
             <React.StrictMode>
@@ -89,7 +92,7 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     clear(): void {
-        this.data = '{}';
+        this.data = DEFAULT_DATA;
         this.root.render(null);
     }
 
