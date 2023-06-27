@@ -1,0 +1,39 @@
+{
+	"name": "obsidian-excalidraw-cn",
+	"version": "1.0.0",
+	"description": "支持中文手写效果的 Excalidraw。Excalidraw supporting Chinese hand write font.",
+	"main": "main.js",
+	"scripts": {
+		"start": "yarn run dev",
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"version": "node version-bump.mjs && git add manifest.json versions.json"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "16.11.6",
+		"@types/react": "18.2.14",
+		"@types/react-dom": "18.2.6",
+		"@typescript-eslint/eslint-plugin": "5.29.0",
+		"@typescript-eslint/parser": "5.29.0",
+		"builtin-modules": "3.3.0",
+		"esbuild": "0.17.3",
+		"esbuild-sass-plugin": "^2.10.0",
+		"nanoid": "4.0.0",
+		"obsidian": "latest",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"react-scripts": "5.0.1",
+		"sass": "1.63.6",
+		"tslib": "2.4.0",
+		"typescript": "4.9.4",
+		"autoprefixer": "^10.4.14",
+		"postcss": "^8.4.24"
+	},
+	"dependencies": {
+		"@handraw/excalidraw": "^1.0.0-alpha.1",
+		"nanoid": "4.0.0"
+	}
+}

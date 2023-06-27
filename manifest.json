@@ -1,0 +1,11 @@
+{
+	"id": "obsidian-excalidraw-cn",
+	"name": "ExcalidrawCN",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "支持中文手写效果的 Excalidraw。Excalidraw supporting Chinese hand write font.",
+	"author": "Korbin Zhao",
+	"authorUrl": "https://korbinzhao.deno.dev/",
+	"fundingUrl": "https://afdian.net/a/wantian",
+	"isDesktopOnly": false
+}
