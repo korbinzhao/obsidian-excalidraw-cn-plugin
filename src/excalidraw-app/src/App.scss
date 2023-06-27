@@ -58,10 +58,12 @@
 	}
 
 	.excalidraw {
-		// --color-primary: #faa2c1;
-		// --color-primary-darker: #f783ac;
-		// --color-primary-darkest: #e64980;
-		// --color-primary-light: #fcc2d7;
+		--input-hover-border-color: #fff;
+		--interactive-normal: #fff;
+
+		.switch-theme {
+			cursor: pointer;
+		}
 
 		button.custom-element {
 			width: 2rem;
@@ -81,9 +83,9 @@
 		button.dropdown-menu-button {
 			padding: 0.5rem;
 
-      &.App-toolbar__extra-tools-trigger{
-        padding: 0.4rem;
-      }
+			&.App-toolbar__extra-tools-trigger {
+				padding: 0.4rem;
+			}
 		}
 
 		.ToolIcon__icon svg {
@@ -94,6 +96,15 @@
 	.excalidraw .ToolIcon .ToolIcon_type_radio:checked+.ToolIcon__icon,
 	.excalidraw .ToolIcon .ToolIcon_type_checkbox:checked+.ToolIcon__icon {
 		background-color: #e3e2fe;
+	}
+
+	.excalidraw .App-toolbar .ToolIcon .ToolIcon_type_radio:checked+.ToolIcon__icon,
+	.excalidraw .App-toolbar .ToolIcon .ToolIcon_type_checkbox:checked+.ToolIcon__icon {
+		// --color-primary: #faa2c1;
+		// --color-primary-darker: #f783ac;
+		// --color-primary-darkest: #e64980;
+		// --color-primary-light: #fcc2d7;
+		--keybinding-color: #b8b8b8;
 	}
 
 }
