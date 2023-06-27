@@ -66,11 +66,12 @@ export default class ExcalidrawCnPlugin extends Plugin {
 
 	public async createAndOpenDrawing(): Promise<string> {
 
-		const file = await this.app.vault.create(`excalidraw ${window.moment().format('YY-MM-DD hh.mm.ss')}.excalidrawcn`, 'hello world');
+		const file = await this.app.vault.create(`excalidraw ${window.moment().format('YY-MM-DD hh.mm.ss')}.excalidrawcn`, '{}');
 
-		const leaf = this.app.workspace.getLeaf(false);
+		const leaf = this.app.workspace.getLeaf(true);
 
-		await this.app.workspace.openLinkText(file.path, file.path, true);
+		// await this.app.workspace.openLinkText(file.path, file.path, true);
+		await leaf.openFile(file, { active: true });
 
 		leaf.setViewState({
 			type: VIEW_TYPE_EXCALIDRAW_CN,

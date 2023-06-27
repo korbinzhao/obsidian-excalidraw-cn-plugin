@@ -13,7 +13,8 @@ import {
   LiveCollaborationTrigger,
   MainMenu,
   Footer,
-  Sidebar
+  Sidebar,
+  languages,
 } from "@handraw/excalidraw";
 import {
   AppState,
@@ -22,17 +23,14 @@ import {
   ExcalidrawInitialDataState,
   Gesture,
   LibraryItems,
-  PointerDownState as ExcalidrawPointerDownState
+  PointerDownState as ExcalidrawPointerDownState,
 } from "@handraw/excalidraw/types/types";
-import { languages } from "@handraw/excalidraw";
 
 import "./App.scss";
-import initialData from "./initialData";
+// import initialData from "./initialData";
 
-import { NonDeletedExcalidrawElement } from "@handraw/excalidraw/types/element/types";
+import { NonDeletedExcalidrawElement, ExcalidrawElement } from "@handraw/excalidraw/types/element/types";
 import { nanoid } from "nanoid";
-import CustomFooter from "./CustomFooter";
-import MobileFooter from "./MobileFooter";
 import {
   resolvablePromise,
   withBatchedUpdates,
@@ -46,6 +44,11 @@ import { ResolvablePromise } from "@handraw/excalidraw/types/utils";
 //     ExcalidrawLib: any;
 //   }
 // }
+
+export interface ExcalidrawDataSource {
+  elements: readonly ExcalidrawElement[];
+  appState: AppState;
+}
 
 type Comment = {
   x: number;
@@ -72,7 +75,12 @@ const COMMENT_ICON_DIMENSION = 32;
 const COMMENT_INPUT_HEIGHT = 50;
 const COMMENT_INPUT_WIDTH = 150;
 
-export default function App() {
+interface ExcalidrawAppProps {
+  dataSource: string;
+  onChange: (elements: readonly ExcalidrawElement[], state: AppState) => void
+}
+
+export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
   const appRef = useRef<any>(null);
   const [viewModeEnabled, setViewModeEnabled] = useState(false);
   const [zenModeEnabled, setZenModeEnabled] = useState(false);
@@ -104,34 +112,46 @@ export default function App() {
 
   useHandleLibrary({ excalidrawAPI });
 
-  // useEffect(() => {
-  //   if (!excalidrawAPI) {
-  //     return;
-  //   }
-  //   const fetchData = async () => {
-  //     const res = await fetch("/rocket.jpeg");
-  //     const imageData = await res.blob();
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(imageData);
+  useEffect(() => {
+    // if (!excalidrawAPI) {
+    //   return;
+    // }
+    // const fetchData = async () => {
+    //   const res = await fetch("/rocket.jpeg");
+    //   const imageData = await res.blob();
+    //   const reader = new FileReader();
+    //   reader.readAsDataURL(imageData);
 
-  //     reader.onload = function () {
-  //       const imagesArray: BinaryFileData[] = [
-  //         {
-  //           id: "rocket" as BinaryFileData["id"],
-  //           dataURL: reader.result as BinaryFileData["dataURL"],
-  //           mimeType: MIME_TYPES.jpg,
-  //           created: 1644915140367,
-  //           lastRetrieved: 1644915140367
-  //         }
-  //       ];
+    //   reader.onload = function () {
+    //     const imagesArray: BinaryFileData[] = [
+    //       {
+    //         id: "rocket" as BinaryFileData["id"],
+    //         dataURL: reader.result as BinaryFileData["dataURL"],
+    //         mimeType: MIME_TYPES.jpg,
+    //         created: 1644915140367,
+    //         lastRetrieved: 1644915140367
+    //       }
+    //     ];
 
-  //       //@ts-ignore
-  //       initialStatePromiseRef.current.promise.resolve(initialData);
-  //       excalidrawAPI.addFiles(imagesArray);
-  //     };
-  //   };
-  //   fetchData();
-  // }, [excalidrawAPI]);
+    let dataSourceObj: ExcalidrawDataSource;
+
+    try {
+      dataSourceObj = JSON.parse(dataSource);
+      // 将 appState.collaborators 从 object 类型转为 Map 类型
+      if (dataSourceObj?.appState?.collaborators) {
+        dataSourceObj.appState.collaborators = new Map(Object.entries(dataSourceObj.appState.collaborators));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    //@ts-ignore
+    initialStatePromiseRef.current.promise.resolve(dataSourceObj);
+    // excalidrawAPI.addFiles(imagesArray);
+    // };
+    // };
+    // fetchData();
+  }, [dataSource]);
 
   const renderTopRightUI = (isMobile: boolean) => {
     return (
@@ -479,9 +499,6 @@ export default function App() {
   };
 
   const switchLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-
-    console.log('--- switchLanguage ---', e?.target?.value);
-
     setLangCode(e?.target?.value);
   }
 
@@ -508,7 +525,7 @@ export default function App() {
         <MainMenu.ItemCustom>
           <select name="language" id="language" defaultValue={'zh-CN'} onChange={switchLanguage} >
             {languages.filter(language => !language.code.startsWith('__')).map(language => {
-              return <option value={language.code}>{language.label}</option>
+              return <option key={language.code} value={language.code}>{language.label}</option>
             })}
           </select>
         </MainMenu.ItemCustom>
@@ -528,7 +545,7 @@ export default function App() {
           ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
           initialData={initialStatePromiseRef.current.promise}
           onChange={(elements, state) => {
-            console.info("Elements :", elements, "State : ", state);
+            onChange(elements, state);
           }}
           onPointerUpdate={(payload: {
             pointer: { x: number; y: number };
