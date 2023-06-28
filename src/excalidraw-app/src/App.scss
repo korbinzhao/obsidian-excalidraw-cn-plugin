@@ -1,8 +1,12 @@
-.App {
+@import './theme.scss';
+
+.excalidraw-cn-app {
 	font-family: sans-serif;
 	text-align: center;
 	width: 100%;
 	height: 100%;
+	position: relative;
+	overflow: hidden;
 
 	// .comment-avatar {
 	// 	background: #faa2c1;
@@ -32,13 +36,6 @@
 		display: flex;
 	}
 
-	.excalidraw-wrapper {
-		width: 100%;
-		height: 100%;
-		position: relative;
-		overflow: hidden;
-	}
-
 	:root[dir="ltr"] .excalidraw .layer-ui__wrapper .zen-mode-transition.App-menu_bottom--transition-left {
 		transform: none;
 	}
@@ -58,11 +55,23 @@
 	}
 
 	.excalidraw {
-		--input-hover-border-color: #fff;
-		--interactive-normal: #fff;
 
 		.switch-theme {
 			cursor: pointer;
+			width: 100%;
+			text-align: left;
+			padding: 6px;
+			border-radius: 5px;
+			color: var(--text-normal);
+			background-color: var(--background);
+
+			&:hover {
+				background-color: var(--color-base-20);
+			}
+		}
+
+		.language-select {
+			width: 100%;
 		}
 
 		button.custom-element {

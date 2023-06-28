@@ -38,16 +38,13 @@ import {
   distance2d
 } from "./utils";
 import { ResolvablePromise } from "@handraw/excalidraw/types/utils";
-
-// declare global {
-//   interface Window {
-//     ExcalidrawLib: any;
-//   }
-// }
+import { getThemeText } from "./locales/utils";
 
 export interface ExcalidrawDataSource {
   elements: readonly ExcalidrawElement[];
   appState: AppState;
+  theme: string;
+  langCode: string;
 }
 
 type Comment = {
@@ -77,7 +74,7 @@ const COMMENT_INPUT_WIDTH = 150;
 
 interface ExcalidrawAppProps {
   dataSource: string;
-  onChange: (elements: readonly ExcalidrawElement[], state: AppState) => void
+  onChange: (data: ExcalidrawDataSource) => void
 }
 
 export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
@@ -137,6 +134,17 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
 
     try {
       dataSourceObj = JSON.parse(dataSource);
+
+      const { theme, langCode } = dataSourceObj;
+
+      if (theme) {
+        setTheme(theme);
+      }
+
+      if (langCode) {
+        setLangCode(langCode);
+      }
+
       // 将 appState.collaborators 从 object 类型转为 Map 类型
       if (dataSourceObj?.appState?.collaborators) {
         dataSourceObj.appState.collaborators = new Map(Object.entries(dataSourceObj.appState.collaborators));
@@ -523,14 +531,14 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
         <MainMenu.Separator />
         <MainMenu.DefaultItems.ToggleTheme />
         <MainMenu.ItemCustom>
-          <select name="language" id="language" defaultValue={'zh-CN'} onChange={switchLanguage} >
+          <select className="language-select" name="language" id="language" defaultValue={'zh-CN'} onChange={switchLanguage} >
             {languages.filter(language => !language.code.startsWith('__')).map(language => {
               return <option key={language.code} value={language.code}>{language.label}</option>
             })}
           </select>
         </MainMenu.ItemCustom>
         <MainMenu.ItemCustom>
-          <div className="switch-theme" onClick={switchTheme}>{theme}</div>
+          <button className="switch-theme" onClick={switchTheme}>{getThemeText(theme === 'light' ? 'dark' : 'light', langCode)}</button>
         </MainMenu.ItemCustom>
         <MainMenu.DefaultItems.Help />
 
@@ -539,43 +547,40 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
     );
   };
   return (
-    <div className="App" ref={appRef} style={{ width: '100%', height: '100%' }}>
-      <div className="excalidraw-wrapper">
-        <Excalidraw
-          ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
-          initialData={initialStatePromiseRef.current.promise}
-          onChange={(elements, state) => {
-            onChange(elements, state);
-          }}
-          onPointerUpdate={(payload: {
-            pointer: { x: number; y: number };
-            button: "down" | "up";
-            pointersMap: Gesture["pointers"];
-          }) => setPointerData(payload)}
-          viewModeEnabled={viewModeEnabled}
-          zenModeEnabled={zenModeEnabled}
-          gridModeEnabled={gridModeEnabled}
-          theme={theme}
-          langCode={langCode}
-          name="Custom name of drawing"
-          UIOptions={{ canvasActions: { loadScene: false } }}
-          renderTopRightUI={renderTopRightUI}
-          onLinkOpen={onLinkOpen}
-          onPointerDown={onPointerDown}
-          onScrollChange={rerenderCommentIcons}
-        // renderSidebar={renderSidebar}
-        >
-          {/* {excalidrawAPI && (
+    <div className={`excalidraw-cn-app theme-${theme}`} ref={appRef}>
+      <Excalidraw
+        ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
+        initialData={initialStatePromiseRef.current.promise}
+        onChange={(elements, appState) => {
+          onChange({ elements, appState, theme, langCode });
+        }}
+        onPointerUpdate={(payload: {
+          pointer: { x: number; y: number };
+          button: "down" | "up";
+          pointersMap: Gesture["pointers"];
+        }) => setPointerData(payload)}
+        viewModeEnabled={viewModeEnabled}
+        zenModeEnabled={zenModeEnabled}
+        gridModeEnabled={gridModeEnabled}
+        theme={theme}
+        langCode={langCode}
+        name="Custom name of drawing"
+        UIOptions={{ canvasActions: { loadScene: false } }}
+        renderTopRightUI={renderTopRightUI}
+        onLinkOpen={onLinkOpen}
+        onPointerDown={onPointerDown}
+        onScrollChange={rerenderCommentIcons}
+      // renderSidebar={renderSidebar}
+      >
+        {/* {excalidrawAPI && (
               <Footer>
                 <CustomFooter excalidrawAPI={excalidrawAPI} />
               </Footer>
             )} */}
-          {renderMenu()}
-        </Excalidraw>
-        {Object.keys(commentIcons || []).length > 0 && renderCommentIcons()}
-        {comment && renderComment()}
-      </div>
-
+        {renderMenu()}
+      </Excalidraw>
+      {Object.keys(commentIcons || []).length > 0 && renderCommentIcons()}
+      {comment && renderComment()}
     </div>
   );
 }

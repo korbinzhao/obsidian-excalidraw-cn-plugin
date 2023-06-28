@@ -18,20 +18,20 @@ export class ExcalidrawCnView extends TextFileView {
     root: Root;
 
     data: string = DEFAULT_DATA;
-   
+
     file: TFile;
 
     getViewType() {
         return VIEW_TYPE_EXCALIDRAW_CN;
     }
 
-    sequelize({ elements, appState }: ExcalidrawDataSource) {
-        return JSON.stringify({ elements, appState });
+    sequelize(data: ExcalidrawDataSource) {
+        return JSON.stringify(data);
     }
 
-    onSave(elements: readonly ExcalidrawElement[], appState: AppState) {
+    onSave(data: ExcalidrawDataSource) {
 
-        this.data = this.sequelize({ elements, appState });
+        this.data = this.sequelize(data);
 
         this.requestSave();
     }
@@ -82,9 +82,11 @@ export class ExcalidrawCnView extends TextFileView {
 
         const dataSource = await this.app.vault.process(file, data => data);
 
+        console.log('--- render ---', JSON.parse(dataSource).elements?.length);
+
         this.data = dataSource || DEFAULT_DATA;
 
-        this.root.render(
+        this.root?.render(
             <React.StrictMode>
                 <ExcalidrawCnApp onChange={this.onSave.bind(this)} dataSource={dataSource} />
             </React.StrictMode>
@@ -93,7 +95,7 @@ export class ExcalidrawCnView extends TextFileView {
 
     clear(): void {
         this.data = DEFAULT_DATA;
-        this.root.render(null);
+        this.root?.render(null);
     }
 
 }
