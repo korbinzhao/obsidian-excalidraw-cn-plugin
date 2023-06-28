@@ -29,9 +29,12 @@ export class ExcalidrawCnView extends TextFileView {
         return JSON.stringify(data);
     }
 
-    onSave(data: ExcalidrawDataSource) {
+    onChange(data: ExcalidrawDataSource) {
+        const dataStr = this.sequelize(data);
 
-        this.data = this.sequelize(data);
+        if (this.data !== dataStr) {
+            this.data = dataStr;
+        }
 
         this.requestSave();
     }
@@ -39,6 +42,8 @@ export class ExcalidrawCnView extends TextFileView {
     async onLoadFile(file: TFile): Promise<void> {
 
         console.log('--- onLoadFile ---', file);
+
+        this.file = file;
 
         this.render(file);
     }
@@ -55,7 +60,6 @@ export class ExcalidrawCnView extends TextFileView {
         console.log('--- onClose ---');
 
         this.setViewData(this.data, true);
-        this.root?.unmount();
     }
 
     getViewData(): string {
@@ -76,19 +80,21 @@ export class ExcalidrawCnView extends TextFileView {
 
     async render(file: TFile) {
 
-        this.file = file;
-
         this.root = this.root || createRoot(this.containerEl.children[1]);;
 
-        const dataSource = await this.app.vault.process(file, data => data);
+        const fileData = await this.app.vault.process(file, data => data);
 
-        console.log('--- render ---', JSON.parse(dataSource).elements?.length);
+        if (!fileData) {
+            return;
+        }
 
-        this.data = dataSource || DEFAULT_DATA;
+        console.log('--- render ---', JSON.parse(fileData).elements?.length);
+
+        this.data = fileData || DEFAULT_DATA;
 
         this.root?.render(
             <React.StrictMode>
-                <ExcalidrawCnApp onChange={this.onSave.bind(this)} dataSource={dataSource} />
+                <ExcalidrawCnApp onChange={this.onChange.bind(this)} dataSource={fileData} />
             </React.StrictMode>
         );
     }
