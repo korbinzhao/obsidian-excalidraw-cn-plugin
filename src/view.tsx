@@ -3,7 +3,7 @@ import * as React from "react";
 import { createRoot, Root } from "react-dom/client";
 import ExcalidrawCnApp from './excalidraw-app/src/App';
 import { ExcalidrawElement } from "@handraw/excalidraw/types/element/types";
-import { AppState } from "@handraw/excalidraw/types/types";
+import { AppState, BinaryFiles } from "@handraw/excalidraw/types/types";
 import { ExcalidrawDataSource } from './excalidraw-app/src/App';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
@@ -30,18 +30,21 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     onChange(data: ExcalidrawDataSource) {
+
+        // console.log('--- onChange ---', data);
+
         const dataStr = this.sequelize(data);
 
         if (this.data !== dataStr) {
             this.data = dataStr;
         }
 
-        this.requestSave();
+        // this.requestSave();
     }
 
     async onLoadFile(file: TFile): Promise<void> {
 
-        console.log('--- onLoadFile ---', file);
+        console.log('--- onLoadFile ---', file.path);
 
         this.file = file;
 
@@ -50,9 +53,11 @@ export class ExcalidrawCnView extends TextFileView {
 
     async onUnloadFile(file: TFile): Promise<void> {
 
-        console.log('--- onUnloadFile ---', JSON.parse(this.data).elements?.length);
+        console.log('--- onUnloadFile ---', JSON.parse(this.data).elements?.length, file.path);
 
         this.setViewData(this.data, true);
+
+        console.log('----------------------------');
     }
 
     async onClose() {
@@ -73,7 +78,7 @@ export class ExcalidrawCnView extends TextFileView {
 
         this.app.vault.modify(this.file, data);
 
-        console.log('--- setViewData --', data.length);
+        console.log('--- setViewData --', data.length, JSON.parse(data).files);
 
         if (clear) {
             this.clear();
@@ -94,7 +99,7 @@ export class ExcalidrawCnView extends TextFileView {
             return;
         }
 
-        console.log('--- render ---', JSON.parse(fileData).elements?.length);
+        console.log('--- render ---', JSON.parse(fileData).elements?.length, JSON.parse(fileData).files);
 
         this.data = fileData || DEFAULT_DATA;
 
@@ -106,7 +111,6 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     clear(): void {
-        this.data = DEFAULT_DATA;
         this.root?.render(null);
     }
 

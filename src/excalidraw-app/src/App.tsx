@@ -18,18 +18,19 @@ import {
 } from "@handraw/excalidraw";
 import {
   AppState,
+  UIAppState,
   BinaryFileData,
   ExcalidrawImperativeAPI,
   ExcalidrawInitialDataState,
   Gesture,
   LibraryItems,
   PointerDownState as ExcalidrawPointerDownState,
+  BinaryFiles,
 } from "@handraw/excalidraw/types/types";
 
-import "./App.scss";
-// import initialData from "./initialData";
-
 import { NonDeletedExcalidrawElement, ExcalidrawElement } from "@handraw/excalidraw/types/element/types";
+import { ClipboardData } from '@handraw/excalidraw/types/clipboard';
+
 import { nanoid } from "nanoid";
 import {
   resolvablePromise,
@@ -40,11 +41,13 @@ import {
 import { ResolvablePromise } from "@handraw/excalidraw/types/utils";
 import { getThemeText } from "./locales/utils";
 
+import "./App.scss";
 export interface ExcalidrawDataSource {
   elements: readonly ExcalidrawElement[];
   appState: AppState;
   theme: string;
   langCode: string;
+  files: BinaryFiles;
 }
 
 type Comment = {
@@ -94,6 +97,7 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
   const [comment, setComment] = useState<Comment | null>(null);
 
   const [langCode, setLangCode] = useState<string>('zh-CN');
+  const [files, setFiles] = useState<BinaryFiles>({});
 
   const initialStatePromiseRef = useRef<{
     promise: ResolvablePromise<ExcalidrawInitialDataState | null>;
@@ -109,26 +113,20 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
 
   useHandleLibrary({ excalidrawAPI });
 
-  useEffect(() => {
-    // if (!excalidrawAPI) {
-    //   return;
-    // }
-    // const fetchData = async () => {
-    //   const res = await fetch("/rocket.jpeg");
-    //   const imageData = await res.blob();
-    //   const reader = new FileReader();
-    //   reader.readAsDataURL(imageData);
 
-    //   reader.onload = function () {
-    //     const imagesArray: BinaryFileData[] = [
-    //       {
-    //         id: "rocket" as BinaryFileData["id"],
-    //         dataURL: reader.result as BinaryFileData["dataURL"],
-    //         mimeType: MIME_TYPES.jpg,
-    //         created: 1644915140367,
-    //         lastRetrieved: 1644915140367
-    //       }
-    //     ];
+  const addFilesToIndexedDB = async (files: BinaryFiles) => {
+    if (!excalidrawAPI) {
+      return false;
+    }
+
+    excalidrawAPI?.addFiles(Object.values(files));
+
+    const _files = excalidrawAPI?.getFiles();
+
+    console.log('--- addedFiles ---', _files);
+  }
+
+  useEffect(() => {
 
     let dataSourceObj: ExcalidrawDataSource;
 
@@ -149,39 +147,29 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
       if (dataSourceObj?.appState?.collaborators) {
         dataSourceObj.appState.collaborators = new Map(Object.entries(dataSourceObj.appState.collaborators));
       }
+
+
+
     } catch (err) {
       console.error(err);
     }
 
     //@ts-ignore
     initialStatePromiseRef.current.promise.resolve(dataSourceObj);
-    // excalidrawAPI.addFiles(imagesArray);
-    // };
-    // };
-    // fetchData();
+
   }, [dataSource]);
 
-  const renderTopRightUI = (isMobile: boolean) => {
-    return (
-      <>
-        {/* {!isMobile && (
-          <LiveCollaborationTrigger
-            isCollaborating={isCollaborating}
-            onSelect={() => {
-              window.alert("Collab dialog clicked");
-            }}
-          />
-        )} */}
-        {/* <button
-          onClick={() => alert("This is dummy top right UI")}
-          style={{ height: "2.5rem" }}
-        >
-          {" "}
-          Click me{" "}
-        </button> */}
-      </>
-    );
-  };
+  useEffect(() => {
+    const dataSourceObj = JSON.parse(dataSource);
+
+    const { files } = dataSourceObj;
+
+    if (files) {
+      addFilesToIndexedDB(files);
+      setFiles(files);
+    }
+  }, [excalidrawAPI]);
+
 
   const onLinkOpen = useCallback(
     (
@@ -256,212 +244,6 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
     });
   };
 
-  const onPointerMoveFromPointerDownHandler = (
-    pointerDownState: PointerDownState
-  ) => {
-    return withBatchedUpdatesThrottled((event) => {
-      if (!excalidrawAPI) {
-        return false;
-      }
-      const { x, y } = viewportCoordsToSceneCoords(
-        {
-          clientX: event.clientX - pointerDownState.hitElementOffsets.x,
-          clientY: event.clientY - pointerDownState.hitElementOffsets.y
-        },
-        excalidrawAPI.getAppState()
-      );
-      setCommentIcons({
-        ...commentIcons,
-        [pointerDownState.hitElement.id!]: {
-          ...commentIcons[pointerDownState.hitElement.id!],
-          x,
-          y
-        }
-      });
-    });
-  };
-  const onPointerUpFromPointerDownHandler = (
-    pointerDownState: PointerDownState
-  ) => {
-    return withBatchedUpdates((event) => {
-      window.removeEventListener("pointermove", pointerDownState.onMove);
-      window.removeEventListener("pointerup", pointerDownState.onUp);
-      excalidrawAPI?.setActiveTool({ type: "selection" });
-      const distance = distance2d(
-        pointerDownState.x,
-        pointerDownState.y,
-        event.clientX,
-        event.clientY
-      );
-      if (distance === 0) {
-        if (!comment) {
-          setComment({
-            x: pointerDownState.hitElement.x + 60,
-            y: pointerDownState.hitElement.y,
-            value: pointerDownState.hitElement.value,
-            id: pointerDownState.hitElement.id
-          });
-        } else {
-          setComment(null);
-        }
-      }
-    });
-  };
-  const saveComment = () => {
-    if (!comment) {
-      return;
-    }
-    if (!comment.id && !comment.value) {
-      setComment(null);
-      return;
-    }
-    const id = comment.id || nanoid();
-    setCommentIcons({
-      ...commentIcons,
-      [id]: {
-        x: comment.id ? comment.x - 60 : comment.x,
-        y: comment.y,
-        id,
-        value: comment.value
-      }
-    });
-    setComment(null);
-  };
-
-  const renderCommentIcons = () => {
-    return Object.values(commentIcons).map((commentIcon) => {
-      if (!excalidrawAPI) {
-        return false;
-      }
-      const appState = excalidrawAPI.getAppState();
-      const { x, y } = sceneCoordsToViewportCoords(
-        { sceneX: commentIcon.x, sceneY: commentIcon.y },
-        excalidrawAPI.getAppState()
-      );
-      return (
-        <div
-          id={commentIcon.id}
-          key={commentIcon.id}
-          style={{
-            top: `${y - COMMENT_ICON_DIMENSION / 2 - appState!.offsetTop}px`,
-            left: `${x - COMMENT_ICON_DIMENSION / 2 - appState!.offsetLeft}px`,
-            position: "absolute",
-            zIndex: 1,
-            width: `${COMMENT_ICON_DIMENSION}px`,
-            height: `${COMMENT_ICON_DIMENSION}px`,
-            cursor: "pointer",
-            touchAction: "none"
-          }}
-          className="comment-icon"
-          onPointerDown={(event) => {
-            event.preventDefault();
-            if (comment) {
-              commentIcon.value = comment.value;
-              saveComment();
-            }
-            const pointerDownState: any = {
-              x: event.clientX,
-              y: event.clientY,
-              hitElement: commentIcon,
-              hitElementOffsets: { x: event.clientX - x, y: event.clientY - y }
-            };
-            const onPointerMove = onPointerMoveFromPointerDownHandler(
-              pointerDownState
-            );
-            const onPointerUp = onPointerUpFromPointerDownHandler(
-              pointerDownState
-            );
-            window.addEventListener("pointermove", onPointerMove);
-            window.addEventListener("pointerup", onPointerUp);
-
-            pointerDownState.onMove = onPointerMove;
-            pointerDownState.onUp = onPointerUp;
-
-            excalidrawAPI?.setActiveTool({
-              type: "custom",
-              customType: "comment"
-            });
-          }}
-        >
-          <div className="comment-avatar">
-            <img src="doremon.png" alt="doremon" />
-          </div>
-        </div>
-      );
-    });
-  };
-
-  const renderComment = () => {
-    if (!comment) {
-      return null;
-    }
-    const appState = excalidrawAPI?.getAppState()!;
-    const { x, y } = sceneCoordsToViewportCoords(
-      { sceneX: comment.x, sceneY: comment.y },
-      appState
-    );
-    let top = y - COMMENT_ICON_DIMENSION / 2 - appState.offsetTop;
-    let left = x - COMMENT_ICON_DIMENSION / 2 - appState.offsetLeft;
-
-    if (
-      top + COMMENT_INPUT_HEIGHT <
-      appState.offsetTop + COMMENT_INPUT_HEIGHT
-    ) {
-      top = COMMENT_ICON_DIMENSION / 2;
-    }
-    if (top + COMMENT_INPUT_HEIGHT > appState.height) {
-      top = appState.height - COMMENT_INPUT_HEIGHT - COMMENT_ICON_DIMENSION / 2;
-    }
-    if (
-      left + COMMENT_INPUT_WIDTH <
-      appState.offsetLeft + COMMENT_INPUT_WIDTH
-    ) {
-      left = COMMENT_ICON_DIMENSION / 2;
-    }
-    if (left + COMMENT_INPUT_WIDTH > appState.width) {
-      left = appState.width - COMMENT_INPUT_WIDTH - COMMENT_ICON_DIMENSION / 2;
-    }
-
-    return (
-      <textarea
-        className="comment"
-        style={{
-          top: `${top}px`,
-          left: `${left}px`,
-          position: "absolute",
-          zIndex: 1,
-          height: `${COMMENT_INPUT_HEIGHT}px`,
-          width: `${COMMENT_INPUT_WIDTH}px`
-        }}
-        ref={(ref) => {
-          setTimeout(() => ref?.focus());
-        }}
-        placeholder={comment.value ? "Reply" : "Comment"}
-        value={comment.value}
-        onChange={(event) => {
-          setComment({ ...comment, value: event.target.value });
-        }}
-        onBlur={saveComment}
-        onKeyDown={(event) => {
-          if (!event.shiftKey && event.key === "Enter") {
-            event.preventDefault();
-            saveComment();
-          }
-        }}
-      />
-    );
-  };
-
-  const renderSidebar = () => {
-    return (
-      // TODO: name 取值应该是啥？
-      <Sidebar name="test_name">
-        <Sidebar.Header>Custom header!</Sidebar.Header>
-        Custom sidebar!
-      </Sidebar>
-    );
-  };
-
   const switchLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLangCode(e?.target?.value);
   }
@@ -471,17 +253,27 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
     setTheme(newTheme);
   }
 
+  const onPaste = async (data: ClipboardData, event: ClipboardEvent | null) => {
+
+    console.log('--- onPaste ---', data);
+
+    const files = data.files;
+
+    if (files) {
+
+      await addFilesToIndexedDB(files);
+
+      setFiles(files);
+    }
+
+    return true;
+  }
+
   const renderMenu = () => {
     return (
       <MainMenu>
         <MainMenu.DefaultItems.SaveAsImage />
         <MainMenu.DefaultItems.Export />
-        {/* <MainMenu.DefaultItems.LiveCollaborationTrigger
-          isCollaborating={isCollaborating}
-          onSelect={() => window.alert("You clicked on collab button")}
-        /> */}
-        {/* <MainMenu.Group title="Excalidraw links"> */}
-        {/* </MainMenu.Group> */}
         <MainMenu.DefaultItems.Help />
         <MainMenu.DefaultItems.ClearCanvas />
         <MainMenu.Separator />
@@ -498,8 +290,6 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
           </select>
         </MainMenu.ItemCustom>
         <MainMenu.DefaultItems.ChangeCanvasBackground />
-
-        {/* {excalidrawAPI && <MobileFooter excalidrawAPI={excalidrawAPI} />} */}
       </MainMenu>
     );
   };
@@ -509,7 +299,7 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
         ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
         initialData={initialStatePromiseRef.current.promise}
         onChange={(elements, appState) => {
-          onChange({ elements, appState, theme, langCode });
+          onChange({ elements, appState, theme, langCode, files });
         }}
         onPointerUpdate={(payload: {
           pointer: { x: number; y: number };
@@ -523,21 +313,14 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
         langCode={langCode}
         name="Custom name of drawing"
         UIOptions={{ canvasActions: { loadScene: false } }}
-        renderTopRightUI={renderTopRightUI}
+        renderTopRightUI={(isMobile: boolean, appState: UIAppState) => { return null; }}
         onLinkOpen={onLinkOpen}
         onPointerDown={onPointerDown}
         onScrollChange={rerenderCommentIcons}
-      // renderSidebar={renderSidebar}
+        onPaste={onPaste}
       >
-        {/* {excalidrawAPI && (
-              <Footer>
-                <CustomFooter excalidrawAPI={excalidrawAPI} />
-              </Footer>
-            )} */}
         {renderMenu()}
       </Excalidraw>
-      {/* {Object.keys(commentIcons || []).length > 0 && renderCommentIcons()}
-      {comment && renderComment()} */}
     </div>
   );
 }
