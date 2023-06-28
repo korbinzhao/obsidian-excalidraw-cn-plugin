@@ -60,6 +60,8 @@ export class ExcalidrawCnView extends TextFileView {
         console.log('--- onClose ---');
 
         this.setViewData(this.data, true);
+
+        this.root?.unmount();
     }
 
     getViewData(): string {
@@ -76,6 +78,10 @@ export class ExcalidrawCnView extends TextFileView {
         if (clear) {
             this.clear();
         }
+    }
+
+    async save() {
+        this.setViewData(this.data, false);
     }
 
     async render(file: TFile) {

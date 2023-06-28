@@ -1,5 +1,5 @@
-declare global {
-    interface Window {
-        ExcalidrawLib: any;
-    }
-}
+// declare global {
+//     interface Window {
+//         ExcalidrawLib: any;
+//     }
+// }

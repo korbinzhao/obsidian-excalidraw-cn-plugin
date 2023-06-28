@@ -183,50 +183,6 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
     );
   };
 
-  const updateScene = () => {
-    const sceneData = {
-      elements: restoreElements(
-        [
-          {
-            type: "rectangle",
-            version: 141,
-            versionNonce: 361174001,
-            isDeleted: false,
-            id: "oDVXy8D6rom3H1-LLH2-f",
-            fillStyle: "hachure",
-            strokeWidth: 1,
-            strokeStyle: "solid",
-            roughness: 1,
-            opacity: 100,
-            angle: 0,
-            x: 100.50390625,
-            y: 93.67578125,
-            strokeColor: "#c92a2a",
-            backgroundColor: "transparent",
-            width: 186.47265625,
-            height: 141.9765625,
-            seed: 1968410350,
-            groupIds: [],
-            boundElements: null,
-            locked: false,
-            link: null,
-            updated: 1,
-            roundness: {
-              type: 3,
-              value: 32
-            },
-            frameId: 'test_frame_id', // TODO: frameId 是啥要怎么传？
-          }
-        ],
-        null
-      ),
-      appState: {
-        viewBackgroundColor: "#edf2ff"
-      }
-    };
-    excalidrawAPI?.updateScene(sceneData);
-  };
-
   const onLinkOpen = useCallback(
     (
       element: NonDeletedExcalidrawElement,
@@ -520,16 +476,20 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
       <MainMenu>
         <MainMenu.DefaultItems.SaveAsImage />
         <MainMenu.DefaultItems.Export />
-        <MainMenu.Separator />
         {/* <MainMenu.DefaultItems.LiveCollaborationTrigger
           isCollaborating={isCollaborating}
           onSelect={() => window.alert("You clicked on collab button")}
         /> */}
         {/* <MainMenu.Group title="Excalidraw links"> */}
-        <MainMenu.DefaultItems.Socials />
         {/* </MainMenu.Group> */}
+        <MainMenu.DefaultItems.Help />
+        <MainMenu.DefaultItems.ClearCanvas />
         <MainMenu.Separator />
-        <MainMenu.DefaultItems.ToggleTheme />
+        <MainMenu.DefaultItems.Socials />
+        <MainMenu.Separator />
+        <MainMenu.ItemCustom>
+          <button className="switch-theme" onClick={switchTheme}>{getThemeText(theme === 'light' ? 'dark' : 'light', langCode)}</button>
+        </MainMenu.ItemCustom>
         <MainMenu.ItemCustom>
           <select className="language-select" name="language" id="language" defaultValue={'zh-CN'} onChange={switchLanguage} >
             {languages.filter(language => !language.code.startsWith('__')).map(language => {
@@ -537,10 +497,7 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
             })}
           </select>
         </MainMenu.ItemCustom>
-        <MainMenu.ItemCustom>
-          <button className="switch-theme" onClick={switchTheme}>{getThemeText(theme === 'light' ? 'dark' : 'light', langCode)}</button>
-        </MainMenu.ItemCustom>
-        <MainMenu.DefaultItems.Help />
+        <MainMenu.DefaultItems.ChangeCanvasBackground />
 
         {/* {excalidrawAPI && <MobileFooter excalidrawAPI={excalidrawAPI} />} */}
       </MainMenu>
@@ -579,8 +536,8 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
             )} */}
         {renderMenu()}
       </Excalidraw>
-      {Object.keys(commentIcons || []).length > 0 && renderCommentIcons()}
-      {comment && renderComment()}
+      {/* {Object.keys(commentIcons || []).length > 0 && renderCommentIcons()}
+      {comment && renderComment()} */}
     </div>
   );
 }

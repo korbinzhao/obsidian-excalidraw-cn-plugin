@@ -57,14 +57,50 @@ export default class ExcalidrawCnPlugin extends Plugin {
 
 		});
 
+		this.addCommands();
+	}
+
+	addCommands() {
+		this.addCommand({
+			id: "save",
+			hotkeys: [{ modifiers: ["Ctrl"], key: "s" }], //See also Poposcope
+			name: 'Save',
+			checkCallback: (checking: boolean) => this.saveActiveView(checking),
+		});
+	}
+
+	private saveActiveView(checking: boolean = false): boolean {
+		if (checking) {
+			return Boolean(this.app.workspace.getActiveViewOfType(ExcalidrawCnView));
+		}
+		const view = this.app.workspace.getActiveViewOfType(ExcalidrawCnView);
+		if (view) {
+			view.save();
+			return true;
+		}
+		return false;
 	}
 
 	onunload() {
-
+		this.saveActiveView();
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
 	}
 
+	// async activateView() {
+	// 	this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
+
+	// 	await this.app.workspace.getRightLeaf(false).setViewState({
+	// 		type: VIEW_TYPE_EXCALIDRAW_CN,
+	// 		active: true,
+	// 	});
+
+	// 	this.app.workspace.revealLeaf(
+	// 		this.app.workspace.getLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN)[0]
+	// 	);
+	// }
 
 	public async createAndOpenDrawing(): Promise<string> {
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
 
 		const file = await this.app.vault.create(`excalidraw ${window.moment().format('YY-MM-DD hh.mm.ss')}.excalidrawcn`, '{}');
 
@@ -78,6 +114,9 @@ export default class ExcalidrawCnPlugin extends Plugin {
 			state: leaf.view.getState(),
 		});
 
+		this.app.workspace.revealLeaf(
+			this.app.workspace.getLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN)[0]
+		);
 
 		return file.path;
 
