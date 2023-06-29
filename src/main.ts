@@ -5,7 +5,6 @@ import { ICON_NAME } from './constants';
 export default class ExcalidrawCnPlugin extends Plugin {
 
 	async onload() {
-
 		this.registerView(
 			VIEW_TYPE_EXCALIDRAW_CN,
 			(leaf) => new ExcalidrawCnView(leaf)

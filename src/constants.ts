@@ -1,2 +1,2 @@
-export const ICON_NAME = 'dice';
+export const ICON_NAME = 'feather';
 export const FRONTMATTER_KEY = "excalidrawcn-plugin";

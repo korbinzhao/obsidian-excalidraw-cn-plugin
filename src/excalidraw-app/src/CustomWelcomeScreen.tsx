@@ -1,5 +1,5 @@
 import { WelcomeScreen, useI18n } from "@handraw/excalidraw";
-import { GithubIcon, TwitterIcon, shareWindows } from './icons'
+import { GithubIcon, TwitterIcon, shareWindows } from './icons/icons'
 
 export default function CustomWelcomeScreen() {
 
