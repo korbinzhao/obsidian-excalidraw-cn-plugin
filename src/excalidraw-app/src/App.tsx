@@ -15,6 +15,7 @@ import {
   Footer,
   Sidebar,
   languages,
+  WelcomeScreen
 } from "@handraw/excalidraw";
 import {
   AppState,
@@ -40,6 +41,7 @@ import {
 } from "./utils";
 import { ResolvablePromise } from "@handraw/excalidraw/types/utils";
 import { getThemeText } from "./locales/utils";
+import CustomWelcomeScreen from "./CustomWelcomeScreen";
 
 import "./App.scss";
 export interface ExcalidrawDataSource {
@@ -332,6 +334,7 @@ function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: Exc
         onPaste={onPaste}
       >
         {renderMenu()}
+        <CustomWelcomeScreen />
       </Excalidraw>
     </div>
   );

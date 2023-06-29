@@ -35,6 +35,8 @@
 	},
 	"dependencies": {
 		"@handraw/excalidraw": "1.0.0-alpha.2",
-		"nanoid": "4.0.0"
+		"clsx": "^1.2.1",
+		"nanoid": "4.0.0",
+		"open-color": "^1.9.1"
 	}
 }
