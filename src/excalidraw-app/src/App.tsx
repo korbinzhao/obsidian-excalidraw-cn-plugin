@@ -81,12 +81,13 @@ const COMMENT_INPUT_WIDTH = 150;
 
 interface ExcalidrawAppProps {
   dataSource: string;
+  fileName: string;
   onChange: (data: ExcalidrawDataSource) => void;
   outputExcalidrawCnAppAPI: (ref: any) => void;
 }
 
 
-function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: ExcalidrawAppProps) {
+function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidrawCnAppAPI, fileName }: ExcalidrawAppProps) {
   const appRef = useRef<any>(null);
   const [viewModeEnabled, setViewModeEnabled] = useState(false);
   const [zenModeEnabled, setZenModeEnabled] = useState(false);
@@ -103,7 +104,6 @@ function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: Exc
   const [comment, setComment] = useState<Comment | null>(null);
 
   const [langCode, setLangCode] = useState<string>('zh-CN');
-  const [files, setFiles] = useState<BinaryFiles>({});
 
   const initialStatePromiseRef = useRef<{
     promise: ResolvablePromise<ExcalidrawInitialDataState | null>;
@@ -136,7 +136,7 @@ function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: Exc
     let dataSourceObj: ExcalidrawDataSource;
 
     try {
-      dataSourceObj = JSON.parse(dataSource);
+      dataSourceObj = JSON.parse(dataSourceText);
 
       const { theme, langCode } = dataSourceObj;
 
@@ -153,8 +153,6 @@ function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: Exc
         dataSourceObj.appState.collaborators = new Map(Object.entries(dataSourceObj.appState.collaborators));
       }
 
-
-
     } catch (err) {
       console.error(err);
     }
@@ -162,25 +160,15 @@ function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: Exc
     //@ts-ignore
     initialStatePromiseRef.current.promise.resolve(dataSourceObj);
 
-  }, [dataSource]);
+  }, [dataSourceText]);
 
   const message = (message: string) => {
     excalidrawAPI?.setToast({ message, duration: 1000 })
   }
 
   useEffect(() => {
-
     if (excalidrawAPI) {
       outputExcalidrawCnAppAPI({ message });
-    }
-
-    const dataSourceObj = JSON.parse(dataSource);
-
-    const { files } = dataSourceObj;
-
-    if (files) {
-      addFilesToIndexedDB(files);
-      setFiles(files);
     }
   }, [excalidrawAPI]);
 
@@ -267,22 +255,6 @@ function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: Exc
     setTheme(newTheme);
   }
 
-  const onPaste = async (data: ClipboardData, event: ClipboardEvent | null) => {
-
-    console.log('--- onPaste ---', data);
-
-    const files = data.files;
-
-    if (files) {
-
-      await addFilesToIndexedDB(files);
-
-      setFiles(files);
-    }
-
-    return true;
-  }
-
   const renderMenu = () => {
     return (
       <MainMenu>
@@ -307,12 +279,13 @@ function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: Exc
       </MainMenu>
     );
   };
+
   return (
     <div className={`excalidraw-cn-app theme-${theme}`} ref={appRef}>
       <Excalidraw
         ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
         initialData={initialStatePromiseRef.current.promise}
-        onChange={(elements, appState) => {
+        onChange={(elements, appState, files) => {
           onChange({ elements, appState, theme, langCode, files });
         }}
         onPointerUpdate={(payload: {
@@ -325,13 +298,13 @@ function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: Exc
         gridModeEnabled={gridModeEnabled}
         theme={theme}
         langCode={langCode}
-        name="Custom name of drawing"
+        name={fileName}
         UIOptions={{ canvasActions: { loadScene: false } }}
         renderTopRightUI={(isMobile: boolean, appState: UIAppState) => { return null; }}
         onLinkOpen={onLinkOpen}
         onPointerDown={onPointerDown}
         onScrollChange={rerenderCommentIcons}
-        onPaste={onPaste}
+      // onPaste={onPaste}
       >
         {renderMenu()}
         <CustomWelcomeScreen />
