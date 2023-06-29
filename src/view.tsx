@@ -113,7 +113,12 @@ export class ExcalidrawCnView extends TextFileView {
 
         this.root?.render(
             <React.StrictMode>
-                <ExcalidrawCnApp outputExcalidrawCnAppAPI={this.getExcalidrawCnAppRef.bind(this)} onChange={this.onChange.bind(this)} dataSource={fileData} />
+                <ExcalidrawCnApp
+                    outputExcalidrawCnAppAPI={this.getExcalidrawCnAppRef.bind(this)}
+                    onChange={this.onChange.bind(this)} 
+                    dataSource={fileData}
+                    fileName={this.file.name}
+                    />
             </React.StrictMode>
         );
     }
