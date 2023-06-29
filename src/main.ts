@@ -82,7 +82,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 	}
 
 	onunload() {
-		this.saveActiveView();
+		// this.saveActiveView();
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
 	}
 

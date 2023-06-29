@@ -18,7 +18,7 @@ export class ExcalidrawCnView extends TextFileView {
 
     data: string = DEFAULT_DATA;
 
-    dataObj: ExcalidrawDataSource;
+    dataObj: ExcalidrawDataSource | {};
 
     file: TFile;
 
@@ -28,12 +28,14 @@ export class ExcalidrawCnView extends TextFileView {
         return VIEW_TYPE_EXCALIDRAW_CN;
     }
 
-    sequelize(data: ExcalidrawDataSource) {
+    sequelize(data: ExcalidrawDataSource | {}) {
         return JSON.stringify(data);
     }
 
-    onChange(data: ExcalidrawDataSource) {
+    onChange(data: ExcalidrawDataSource | {}) {
         this.dataObj = data;
+
+        // this.requestSave();
     }
 
     async onLoadFile(file: TFile): Promise<void> {
@@ -49,9 +51,7 @@ export class ExcalidrawCnView extends TextFileView {
 
         console.log('--- onUnloadFile ---', JSON.parse(this.data).elements?.length, file.path);
 
-        this.data = this.sequelize(this.dataObj);
-
-        this.setViewData(this.data, true);
+        this.save(true);
 
         console.log('----------------------------');
     }
@@ -59,9 +59,7 @@ export class ExcalidrawCnView extends TextFileView {
     async onClose() {
         console.log('--- onClose ---');
 
-        this.data = this.sequelize(this.dataObj);
-
-        this.setViewData(this.data, true);
+        this.save(true);
 
         this.root?.unmount();
     }
@@ -73,23 +71,26 @@ export class ExcalidrawCnView extends TextFileView {
     setViewData(data: string = DEFAULT_DATA, clear: boolean = false): void {
         this.data = data;
 
-        this.app.vault.modify(this.file, data);
-
-        console.log('--- setViewData --', data.length, JSON.parse(data).files);
+        console.log('--- setViewData --', data.length);
 
         if (clear) {
             this.clear();
         }
     }
 
-    async save() {
-        this.data = this.sequelize(this.dataObj);
+    async save(clear: boolean = false) {
 
-        await this.setViewData(this.data, false);
+        console.log('--- save ---');
 
-        console.log('saved excalidrawCnAppRef', this.excalidrawCnAppRef);
+        const data = this.sequelize(this.dataObj);
 
-        await this.excalidrawCnAppRef.message('Saved!');
+        this.setViewData(data);
+
+        this.app.vault.modify(this.file, this.data);
+
+        if (clear) {
+            this.clear();
+        }
     }
 
     getExcalidrawCnAppRef(ref: any) {
@@ -108,7 +109,7 @@ export class ExcalidrawCnView extends TextFileView {
 
         console.log('--- render ---', JSON.parse(fileData).elements?.length, JSON.parse(fileData).files);
 
-        this.data = fileData || DEFAULT_DATA;
+        this.setViewData(fileData);
 
         this.root?.render(
             <React.StrictMode>
@@ -123,6 +124,8 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     clear(): void {
+        this.setViewData(DEFAULT_DATA);
+        this.dataObj = {};
         this.root?.render(null);
     }
 
