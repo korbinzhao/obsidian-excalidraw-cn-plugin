@@ -47,7 +47,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 			(leaf) => new ExcalidrawCnView(leaf)
 		);
 
-		this.registerExtensions(["excalidrawcn"], VIEW_TYPE_EXCALIDRAW_CN);
+		this.registerExtensions(["exc"], VIEW_TYPE_EXCALIDRAW_CN);
 
 		this.addRibbonIcon(ICON_NAME, "Create New Excalidraw File", async (e) => {
 
@@ -102,7 +102,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 	public async createAndOpenDrawing(): Promise<string> {
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
 
-		const file = await this.app.vault.create(`excalidraw ${window.moment().format('YY-MM-DD hh.mm.ss')}.excalidrawcn`, '{}');
+		const file = await this.app.vault.create(`excalidraw ${window.moment().format('YY-MM-DD hh.mm.ss')}.exc`, '{}');
 
 		const leaf = this.app.workspace.getLeaf(true);
 
