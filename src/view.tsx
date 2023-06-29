@@ -1,9 +1,7 @@
 import { TFile, TextFileView, WorkspaceLeaf } from "obsidian";
-import * as React from "react";
+import React from "react";
 import { createRoot, Root } from "react-dom/client";
 import ExcalidrawCnApp from './excalidraw-app/src/App';
-import { ExcalidrawElement } from "@handraw/excalidraw/types/element/types";
-import { AppState, BinaryFiles } from "@handraw/excalidraw/types/types";
 import { ExcalidrawDataSource } from './excalidraw-app/src/App';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
@@ -20,6 +18,8 @@ export class ExcalidrawCnView extends TextFileView {
     data: string = DEFAULT_DATA;
 
     file: TFile;
+
+    excalidrawCnAppRef: any;
 
     getViewType() {
         return VIEW_TYPE_EXCALIDRAW_CN;
@@ -86,7 +86,15 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     async save() {
-        this.setViewData(this.data, false);
+        await this.setViewData(this.data, false);
+
+        console.log('saved excalidrawCnAppRef', this.excalidrawCnAppRef);
+
+        await this.excalidrawCnAppRef.message('Saved!');
+    }
+
+    getExcalidrawCnAppRef(ref: any) {
+        this.excalidrawCnAppRef = ref;
     }
 
     async render(file: TFile) {
@@ -105,7 +113,7 @@ export class ExcalidrawCnView extends TextFileView {
 
         this.root?.render(
             <React.StrictMode>
-                <ExcalidrawCnApp onChange={this.onChange.bind(this)} dataSource={fileData} />
+                <ExcalidrawCnApp outputExcalidrawCnAppAPI={this.getExcalidrawCnAppRef.bind(this)} onChange={this.onChange.bind(this)} dataSource={fileData} />
             </React.StrictMode>
         );
     }

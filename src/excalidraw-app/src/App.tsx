@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useImperativeHandle, forwardRef } from "react";
 import {
   exportToCanvas,
   exportToSvg,
@@ -48,6 +48,8 @@ export interface ExcalidrawDataSource {
   theme: string;
   langCode: string;
   files: BinaryFiles;
+  scrollToContent?: boolean;
+  libraryItems?: LibraryItems | Promise<LibraryItems>;
 }
 
 type Comment = {
@@ -77,10 +79,12 @@ const COMMENT_INPUT_WIDTH = 150;
 
 interface ExcalidrawAppProps {
   dataSource: string;
-  onChange: (data: ExcalidrawDataSource) => void
+  onChange: (data: ExcalidrawDataSource) => void;
+  outputExcalidrawCnAppAPI: (ref: any) => void;
 }
 
-export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
+
+function ExcalidrawCnApp({ dataSource, onChange, outputExcalidrawCnAppAPI }: ExcalidrawAppProps) {
   const appRef = useRef<any>(null);
   const [viewModeEnabled, setViewModeEnabled] = useState(false);
   const [zenModeEnabled, setZenModeEnabled] = useState(false);
@@ -112,7 +116,6 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
   ] = useState<ExcalidrawImperativeAPI | null>(null);
 
   useHandleLibrary({ excalidrawAPI });
-
 
   const addFilesToIndexedDB = async (files: BinaryFiles) => {
     if (!excalidrawAPI) {
@@ -159,7 +162,16 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
 
   }, [dataSource]);
 
+  const message = (message: string) => {
+    excalidrawAPI?.setToast({ message, duration: 1000 })
+  }
+
   useEffect(() => {
+
+    if (excalidrawAPI) {
+      outputExcalidrawCnAppAPI({ message });
+    }
+
     const dataSourceObj = JSON.parse(dataSource);
 
     const { files } = dataSourceObj;
@@ -324,3 +336,5 @@ export default function App({ dataSource, onChange }: ExcalidrawAppProps) {
     </div>
   );
 }
+
+export default ExcalidrawCnApp;
