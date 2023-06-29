@@ -1,44 +1,8 @@
-import { Plugin, WorkspaceLeaf } from 'obsidian';
+import { Plugin } from 'obsidian';
 import { ExcalidrawCnView, VIEW_TYPE_EXCALIDRAW_CN } from './view';
 import { ICON_NAME } from './constants';
 
-interface ExcalidrawCnPluginSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: ExcalidrawCnPluginSettings = {
-	mySetting: 'default'
-}
-
-/**
- * @public
- */
-export interface ViewState {
-
-	/**
-	 * @public
-	 */
-	type: string;
-	/**
-	 * @public
-	 */
-	state?: any;
-	/**
-	 * @public
-	 */
-	active?: boolean;
-	/**
-	 * @public
-	 */
-	pinned?: boolean;
-	/**
-	 * @public
-	 */
-	group?: WorkspaceLeaf;
-}
-
 export default class ExcalidrawCnPlugin extends Plugin {
-	settings: ExcalidrawCnPluginSettings;
 
 	async onload() {
 
@@ -82,22 +46,8 @@ export default class ExcalidrawCnPlugin extends Plugin {
 	}
 
 	onunload() {
-		// this.saveActiveView();
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
 	}
-
-	// async activateView() {
-	// 	this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
-
-	// 	await this.app.workspace.getRightLeaf(false).setViewState({
-	// 		type: VIEW_TYPE_EXCALIDRAW_CN,
-	// 		active: true,
-	// 	});
-
-	// 	this.app.workspace.revealLeaf(
-	// 		this.app.workspace.getLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN)[0]
-	// 	);
-	// }
 
 	public async createAndOpenDrawing(): Promise<string> {
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
@@ -106,8 +56,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 
 		const leaf = this.app.workspace.getLeaf(true);
 
-		// await this.app.workspace.openLinkText(file.path, file.path, true);
-		await leaf.openFile(file, { active: true });
+		await leaf.openFile(file, { active: false });
 
 		leaf.setViewState({
 			type: VIEW_TYPE_EXCALIDRAW_CN,

@@ -34,8 +34,7 @@ export class ExcalidrawCnView extends TextFileView {
 
     onChange(data: ExcalidrawDataSource | {}) {
         this.dataObj = data;
-
-        // this.requestSave();
+        this.requestSave();
     }
 
     async onLoadFile(file: TFile): Promise<void> {
@@ -51,15 +50,18 @@ export class ExcalidrawCnView extends TextFileView {
 
         console.log('--- onUnloadFile ---', JSON.parse(this.data).elements?.length, file.path);
 
-        this.save(true);
+        this.clear();
 
         console.log('----------------------------');
     }
 
+    onunload(){
+        console.log('--- onunload ---');
+        this.root?.unmount();
+    }
+
     async onClose() {
         console.log('--- onClose ---');
-
-        this.save(true);
 
         this.root?.unmount();
     }
