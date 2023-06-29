@@ -3,6 +3,7 @@ import React from "react";
 import { createRoot, Root } from "react-dom/client";
 import ExcalidrawCnApp from './excalidraw-app/src/App';
 import { ExcalidrawDataSource } from './excalidraw-app/src/App';
+import { debounce } from './excalidraw-app/src/utils';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
 
@@ -17,6 +18,8 @@ export class ExcalidrawCnView extends TextFileView {
 
     data: string = DEFAULT_DATA;
 
+    dataObj: ExcalidrawDataSource;
+
     file: TFile;
 
     excalidrawCnAppRef: any;
@@ -30,16 +33,7 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     onChange(data: ExcalidrawDataSource) {
-
-        // console.log('--- onChange ---', data);
-
-        const dataStr = this.sequelize(data);
-
-        if (this.data !== dataStr) {
-            this.data = dataStr;
-        }
-
-        // this.requestSave();
+        this.dataObj = data;
     }
 
     async onLoadFile(file: TFile): Promise<void> {
@@ -55,14 +49,17 @@ export class ExcalidrawCnView extends TextFileView {
 
         console.log('--- onUnloadFile ---', JSON.parse(this.data).elements?.length, file.path);
 
+        this.data = this.sequelize(this.dataObj);
+
         this.setViewData(this.data, true);
 
         console.log('----------------------------');
     }
 
     async onClose() {
-
         console.log('--- onClose ---');
+
+        this.data = this.sequelize(this.dataObj);
 
         this.setViewData(this.data, true);
 
@@ -86,6 +83,8 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     async save() {
+        this.data = this.sequelize(this.dataObj);
+
         await this.setViewData(this.data, false);
 
         console.log('saved excalidrawCnAppRef', this.excalidrawCnAppRef);
@@ -115,10 +114,10 @@ export class ExcalidrawCnView extends TextFileView {
             <React.StrictMode>
                 <ExcalidrawCnApp
                     outputExcalidrawCnAppAPI={this.getExcalidrawCnAppRef.bind(this)}
-                    onChange={this.onChange.bind(this)} 
+                    onChange={this.onChange.bind(this)}
                     dataSource={fileData}
                     fileName={this.file.name}
-                    />
+                />
             </React.StrictMode>
         );
     }
