@@ -1,6 +1,8 @@
-import { Plugin } from 'obsidian';
+import { Plugin, TextFileView, Editor } from 'obsidian';
 import { ExcalidrawCnView, VIEW_TYPE_EXCALIDRAW_CN } from './view';
 import { ICON_NAME } from './constants';
+
+const FILE_EXTENSION = 'ex';
 
 export default class ExcalidrawCnPlugin extends Plugin {
 
@@ -10,14 +12,11 @@ export default class ExcalidrawCnPlugin extends Plugin {
 			(leaf) => new ExcalidrawCnView(leaf)
 		);
 
-		this.registerExtensions(["exc"], VIEW_TYPE_EXCALIDRAW_CN);
+		this.registerExtensions([FILE_EXTENSION], VIEW_TYPE_EXCALIDRAW_CN);
 
 		this.addRibbonIcon(ICON_NAME, "Create New Excalidraw File", async (e) => {
 
 			this.createAndOpenDrawing();
-
-			console.log("Hello, you!");
-
 		});
 
 		this.addCommands();
@@ -51,7 +50,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 	public async createAndOpenDrawing(): Promise<string> {
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
 
-		const file = await this.app.vault.create(`excalidraw ${window.moment().format('YY-MM-DD hh.mm.ss')}.exc`, '{}');
+		const file = await this.app.vault.create(`excalidraw ${window.moment().format('YY-MM-DD hh.mm.ss')}.${FILE_EXTENSION}`, '{}');
 
 		const leaf = this.app.workspace.getLeaf(true);
 

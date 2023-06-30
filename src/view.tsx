@@ -3,7 +3,6 @@ import React from "react";
 import { createRoot, Root } from "react-dom/client";
 import ExcalidrawCnApp from './excalidraw-app/src/App';
 import { ExcalidrawDataSource } from './excalidraw-app/src/App';
-import { debounce } from './excalidraw-app/src/utils';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
 

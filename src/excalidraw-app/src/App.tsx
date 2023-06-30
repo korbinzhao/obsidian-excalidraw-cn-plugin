@@ -129,6 +129,8 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     const _files = excalidrawAPI?.getFiles();
 
     console.log('--- addedFiles ---', _files);
+
+    
   }
 
   useEffect(() => {
@@ -152,6 +154,8 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
       if (dataSourceObj?.appState?.collaborators) {
         dataSourceObj.appState.collaborators = new Map(Object.entries(dataSourceObj.appState.collaborators));
       }
+
+      console.log('--- obj ---', dataSourceObj);
 
     } catch (err) {
       console.error(err);

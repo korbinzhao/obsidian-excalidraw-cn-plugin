@@ -24,7 +24,7 @@
   "include": [
     "**/*.ts",
     "src/view.tsx"
-  ],
+, "src/excalidraw-app/src/icons.tsx"  ],
   "exclude": [
     "node_modules",
     "dist"
