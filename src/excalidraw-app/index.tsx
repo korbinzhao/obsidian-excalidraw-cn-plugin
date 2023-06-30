@@ -43,7 +43,8 @@ import { ResolvablePromise } from "@handraw/excalidraw/types/utils";
 import { getThemeText } from "./locales/utils";
 import CustomWelcomeScreen from "./CustomWelcomeScreen";
 
-import "./App.scss";
+import "./index.scss";
+
 export interface ExcalidrawDataSource {
   elements: readonly ExcalidrawElement[];
   appState: AppState;

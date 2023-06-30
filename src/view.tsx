@@ -1,8 +1,8 @@
 import { TFile, TextFileView, WorkspaceLeaf } from "obsidian";
 import React from "react";
 import { createRoot, Root } from "react-dom/client";
-import ExcalidrawCnApp from './excalidraw-app/src/App';
-import { ExcalidrawDataSource } from './excalidraw-app/src/App';
+import ExcalidrawCnApp from './excalidraw-app';
+import { ExcalidrawDataSource } from './excalidraw-app';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
 
