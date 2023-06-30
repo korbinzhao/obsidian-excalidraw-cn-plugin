@@ -38,10 +38,11 @@ import {
   withBatchedUpdates,
   withBatchedUpdatesThrottled,
   distance2d
-} from "./utils";
+} from "./utils/other";
 import { ResolvablePromise } from "@handraw/excalidraw/types/utils";
 import { getThemeText } from "./locales/utils";
 import CustomWelcomeScreen from "./CustomWelcomeScreen";
+import { DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX, VAULT_NAME } from './utils/default';
 
 import "./index.scss";
 
@@ -88,8 +89,9 @@ interface ExcalidrawAppProps {
   openFileInNewTab: (linkText: string) => void;
 }
 
-const VAULT_NAME = window.app.vault.adapter.getName();
-const DOUBLE_CHAIN_LINK_REGEX = /\[\[(.+)\]\]/;
+export interface ExcaldirawCnSetting {
+  keepInSync: boolean;
+}
 
 function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidrawCnAppAPI, fileName, openFileInNewTab }: ExcalidrawAppProps) {
   const appRef = useRef<any>(null);
@@ -174,10 +176,10 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     ) => {
       let link = element.link!;
 
-      const isDoubleChainLink = DOUBLE_CHAIN_LINK_REGEX.test(link);
+      const isDoubleChainLink = DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX.test(link);
 
       if (isDoubleChainLink) {
-        const fileName = link.match(DOUBLE_CHAIN_LINK_REGEX)?.[1];
+        const fileName = link.match(DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX)?.[1];
         link = `obsidian://open?vault=${VAULT_NAME}&file=${fileName}`;
       }
 

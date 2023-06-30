@@ -1,10 +1,12 @@
-import { Plugin, TextFileView, Editor } from 'obsidian';
+import { Plugin, Notice, TFile } from 'obsidian';
 import { ExcalidrawCnView, VIEW_TYPE_EXCALIDRAW_CN } from './view';
-import { ICON_NAME } from './constants';
-
-const FILE_EXTENSION = 'ex';
+import { ICON_NAME, FILE_EXTENSION } from './constants';
+import { ExcaldirawCnSetting } from './excalidraw-app';
+import { ExcalidrawElement } from '@handraw/excalidraw/types/element/types';
+import { getLinkFileName, FILE_NAME_REGEX } from './excalidraw-app/utils/default';
 
 export default class ExcalidrawCnPlugin extends Plugin {
+	public settings: ExcaldirawCnSetting;
 
 	async onload() {
 		this.registerView(
@@ -20,6 +22,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 		});
 
 		this.addCommands();
+		this.addEventListeners();
 	}
 
 	addCommands() {
@@ -29,6 +32,68 @@ export default class ExcalidrawCnPlugin extends Plugin {
 			name: 'Save',
 			checkCallback: (checking: boolean) => this.saveActiveView(checking),
 		});
+	}
+
+	async syncDoubleChainFileNameWhenRename(newName: string, oldName: string) {
+
+		try {
+			const files = this.app.vault.getFiles();
+			const excalidrawCnFiles = files.filter(file => file.extension === FILE_EXTENSION);
+
+			console.log('excalidrawCnFiles', excalidrawCnFiles)
+
+			for await (const file of excalidrawCnFiles) {
+				const fileData = await this.app.vault.process(file, data => data);
+				const dataObj = JSON.parse(fileData);
+
+				let matchCount = 0;
+
+				dataObj.elements = dataObj.elements.map((element: ExcalidrawElement) => {
+					if (element.link && getLinkFileName(element.link) === oldName) {
+						matchCount++;
+						const link = `[[${newName}]]`
+						return { ...element, link };
+					}
+					return element;
+				});
+
+				// 只有匹配到双链才重新存储文件数据
+				if (matchCount) {
+					const newFileData = JSON.stringify(dataObj);
+					await this.app.vault.modify(file, newFileData);
+
+					console.log(`sync file ${file.basename} done`, oldName, newName);
+
+					this.sendNotice(`Update ${matchCount} links in ${file.name}`)
+				}
+
+			}
+
+		} catch (err) {
+			console.log('sync new file name failed', err)
+		}
+
+	}
+
+	sendNotice(message: string) {
+		return new Notice(message, 3000);
+	}
+
+
+	addEventListeners() {
+		this.registerEvent(this.app.vault.on('rename', (file: TFile, oldPath: string) => {
+
+			if (!(file instanceof TFile)) {
+				return;
+			}
+
+			const oldName = oldPath.match(FILE_NAME_REGEX)?.[1];
+
+			console.log('file rename', file, oldName)
+
+			oldName && this.syncDoubleChainFileNameWhenRename(file.basename, oldName);
+
+		}));
 	}
 
 	private saveActiveView(checking: boolean = false): boolean {

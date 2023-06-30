@@ -1,25 +1,6 @@
 import { ResolvablePromise } from "@handraw/excalidraw/types/utils";
 import { unstable_batchedUpdates } from "react-dom";
 
-export const debounce = (fn: Function, wait: number) => {
-  let timer: ReturnType<typeof setTimeout> | null = null;
-
-  return (...args: any[]) => {
-
-    if (timer) {
-      return;
-    }
-
-    timer = setTimeout(() => {
-      timer && clearTimeout(timer);
-      timer = null;
-
-      fn(...args);
-    }, wait)
-
-  }
-}
-
 export const throttleRAF = <T extends any[]>(
   fn: (...args: T) => void,
   opts?: { trailing?: boolean }
@@ -110,3 +91,4 @@ export const resolvablePromise = () => {
   (promise as any).reject = reject;
   return promise as ResolvablePromise<any>;
 };
+
