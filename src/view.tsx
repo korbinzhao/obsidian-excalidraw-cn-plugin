@@ -3,6 +3,7 @@ import React from "react";
 import { createRoot, Root } from "react-dom/client";
 import ExcalidrawCnApp from './excalidraw-app';
 import { ExcalidrawDataSource } from './excalidraw-app';
+import { sendNotice } from './utils/notice';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
 
@@ -25,6 +26,20 @@ export class ExcalidrawCnView extends TextFileView {
 
     excalidrawCnAppRef: any;
 
+    timer: NodeJS.Timeout | null;
+
+    debounceSave = () => {
+        if (this.timer) {
+            return
+        }
+
+        this.timer = setTimeout(() => {
+            this.timer && clearTimeout(this.timer);
+            this.timer = null;
+            this.save();
+        }, 1000);
+    }
+
     getViewType() {
         return VIEW_TYPE_EXCALIDRAW_CN;
     }
@@ -35,8 +50,14 @@ export class ExcalidrawCnView extends TextFileView {
 
     onChange(data: ExcalidrawDataSource | {}) {
         this.dataObj = data;
-        this.requestSave();
+        // this.requestSave();
+
+        console.log('--- onChange ---');
+
+        this.debounceSave();
     }
+
+
 
     async onLoadFile(file: TFile): Promise<void> {
 
@@ -49,7 +70,7 @@ export class ExcalidrawCnView extends TextFileView {
 
     async onUnloadFile(file: TFile): Promise<void> {
 
-        console.log('--- onUnloadFile ---', JSON.parse(this.data).elements?.length, file.path);
+        console.log('--- onUnloadFile elements ---', JSON.parse(this.data).elements?.length, file.path);
 
         this.clear();
 
@@ -58,6 +79,9 @@ export class ExcalidrawCnView extends TextFileView {
 
     onunload() {
         console.log('--- onunload ---');
+       
+        this.clear();
+
         this.root?.unmount();
     }
 
@@ -74,7 +98,7 @@ export class ExcalidrawCnView extends TextFileView {
     setViewData(data: string = DEFAULT_DATA, clear: boolean = false): void {
         this.data = data;
 
-        console.log('--- setViewData --', data.length);
+        console.log('--- setViewData elements --', JSON.parse(data).elements?.length);
 
         if (clear) {
             this.clear();
@@ -90,6 +114,8 @@ export class ExcalidrawCnView extends TextFileView {
         this.setViewData(data);
 
         this.app.vault.modify(this.file, this.data);
+
+        sendNotice('Saved!');
 
         if (clear) {
             this.clear();
@@ -123,7 +149,7 @@ export class ExcalidrawCnView extends TextFileView {
             return;
         }
 
-        console.log('--- render ---', JSON.parse(fileData).elements?.length, JSON.parse(fileData).files);
+        console.log('--- render elements ---', JSON.parse(fileData).elements?.length, JSON.parse(fileData).files);
 
         this.setViewData(fileData);
 
@@ -141,6 +167,9 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     clear(): void {
+        this.timer && clearTimeout(this.timer);
+        this.timer = null;
+
         this.setViewData(DEFAULT_DATA);
         this.dataObj = {};
         this.root?.render(null);

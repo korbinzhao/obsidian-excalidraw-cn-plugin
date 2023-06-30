@@ -4,6 +4,7 @@ import { ICON_NAME, FILE_EXTENSION } from './constants';
 import { ExcaldirawCnSetting } from './excalidraw-app';
 import { ExcalidrawElement } from '@handraw/excalidraw/types/element/types';
 import { getLinkFileName, FILE_NAME_REGEX } from './excalidraw-app/utils/default';
+import { sendNotice } from './utils/notice';
 
 export default class ExcalidrawCnPlugin extends Plugin {
 	public settings: ExcaldirawCnSetting;
@@ -21,17 +22,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 			this.createAndOpenDrawing();
 		});
 
-		this.addCommands();
 		this.addEventListeners();
-	}
-
-	addCommands() {
-		this.addCommand({
-			id: "save",
-			hotkeys: [{ modifiers: ["Ctrl"], key: "s" }], //See also Poposcope
-			name: 'Save',
-			checkCallback: (checking: boolean) => this.saveActiveView(checking),
-		});
 	}
 
 	async syncDoubleChainFileNameWhenRename(newName: string, oldName: string) {
@@ -64,7 +55,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 
 					console.log(`sync file ${file.basename} done`, oldName, newName);
 
-					this.sendNotice(`Update ${matchCount} links in ${file.name}`)
+					sendNotice(`Update ${matchCount} links in ${file.name}`)
 				}
 
 			}
@@ -74,11 +65,6 @@ export default class ExcalidrawCnPlugin extends Plugin {
 		}
 
 	}
-
-	sendNotice(message: string) {
-		return new Notice(message, 3000);
-	}
-
 
 	addEventListeners() {
 		this.registerEvent(this.app.vault.on('rename', (file: TFile, oldPath: string) => {
@@ -96,18 +82,6 @@ export default class ExcalidrawCnPlugin extends Plugin {
 		}));
 	}
 
-	private saveActiveView(checking: boolean = false): boolean {
-		if (checking) {
-			return Boolean(this.app.workspace.getActiveViewOfType(ExcalidrawCnView));
-		}
-		const view = this.app.workspace.getActiveViewOfType(ExcalidrawCnView);
-		if (view) {
-			view.save();
-			return true;
-		}
-		return false;
-	}
-
 	onunload() {
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
 	}
@@ -117,9 +91,9 @@ export default class ExcalidrawCnPlugin extends Plugin {
 
 		const file = await this.app.vault.create(`excalidraw ${window.moment().format('YY-MM-DD hh.mm.ss')}.${FILE_EXTENSION}`, '{}');
 
-		const leaf = this.app.workspace.getLeaf(true);
+		const leaf = this.app.workspace.getLeaf('tab');
 
-		await leaf.openFile(file, { active: false });
+		await leaf.openFile(file, { active: true });
 
 		leaf.setViewState({
 			type: VIEW_TYPE_EXCALIDRAW_CN,

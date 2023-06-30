@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback, useImperativeHandle, forwardRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   exportToCanvas,
   exportToSvg,
@@ -92,6 +92,8 @@ interface ExcalidrawAppProps {
 export interface ExcaldirawCnSetting {
   keepInSync: boolean;
 }
+
+const WAIT_TIME = 2000;
 
 function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidrawCnAppAPI, fileName, openFileInNewTab }: ExcalidrawAppProps) {
   const appRef = useRef<any>(null);
@@ -277,12 +279,31 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     );
   };
 
+  // const onExcalidrawChange = useCallback((elements: ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
+    
+  //   console.log('--- onExcalidrawChange ---', timerRef.current);
+    
+  //   if (timerRef.current) {
+  //     return;
+  //   }
+
+  //   const timeout = setTimeout(() => {
+  //     clearTimeout(timeout);
+  //     timerRef.current = undefined;
+  //     onChange({ elements, appState, theme, langCode, files });
+  //   }, WAIT_TIME);
+
+  //   timerRef.current = timeout;
+  // }, [timerRef.current])
+
+  console.log('---- render excalidraw-app ---');
+
   return (
     <div className={`excalidraw-cn-app theme-${theme}`} ref={appRef}>
       <Excalidraw
         ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
         initialData={initialStatePromiseRef.current.promise}
-        onChange={(elements, appState, files) => {
+        onChange={(elements: ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
           onChange({ elements, appState, theme, langCode, files });
         }}
         // onPointerUpdate={(payload: {
