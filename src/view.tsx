@@ -29,15 +29,13 @@ export class ExcalidrawCnView extends TextFileView {
     timer: NodeJS.Timeout | null;
 
     debounceSave = () => {
-        if (this.timer) {
-            return
-        }
+        this.timer && clearTimeout(this.timer);
 
         this.timer = setTimeout(() => {
             this.timer && clearTimeout(this.timer);
             this.timer = null;
             this.save();
-        }, 1000);
+        }, 200);
     }
 
     getViewType() {
@@ -79,7 +77,7 @@ export class ExcalidrawCnView extends TextFileView {
 
     onunload() {
         console.log('--- onunload ---');
-       
+
         this.clear();
 
         this.root?.unmount();
@@ -107,9 +105,14 @@ export class ExcalidrawCnView extends TextFileView {
 
     async save(clear: boolean = false) {
 
-        console.log('--- save ---');
-
         const data = this.sequelize(this.dataObj);
+
+        // 数据未发生变化不做存储
+        if (data === this.data) {
+            return;
+        }
+
+        console.log('--- save ---');
 
         this.setViewData(data);
 
