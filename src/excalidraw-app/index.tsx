@@ -85,10 +85,13 @@ interface ExcalidrawAppProps {
   fileName: string;
   onChange: (data: ExcalidrawDataSource) => void;
   outputExcalidrawCnAppAPI: (ref: any) => void;
+  openFileInNewTab: (linkText: string) => void;
 }
 
+const VAULT_NAME = window.app.vault.adapter.getName();
+const DOUBLE_CHAIN_LINK_REGEX = /\[\[(.+)\]\]/;
 
-function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidrawCnAppAPI, fileName }: ExcalidrawAppProps) {
+function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidrawCnAppAPI, fileName, openFileInNewTab }: ExcalidrawAppProps) {
   const appRef = useRef<any>(null);
   const [viewModeEnabled, setViewModeEnabled] = useState(false);
   const [zenModeEnabled, setZenModeEnabled] = useState(false);
@@ -120,20 +123,6 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
 
   useHandleLibrary({ excalidrawAPI });
 
-  const addFilesToIndexedDB = async (files: BinaryFiles) => {
-    if (!excalidrawAPI) {
-      return false;
-    }
-
-    excalidrawAPI?.addFiles(Object.values(files));
-
-    const _files = excalidrawAPI?.getFiles();
-
-    console.log('--- addedFiles ---', _files);
-
-
-  }
-
   useEffect(() => {
 
     let dataSourceObj: ExcalidrawDataSource;
@@ -155,8 +144,6 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
       if (dataSourceObj?.appState?.collaborators) {
         dataSourceObj.appState.collaborators = new Map(Object.entries(dataSourceObj.appState.collaborators));
       }
-
-      console.log('--- obj ---', dataSourceObj);
 
     } catch (err) {
       console.error(err);
@@ -185,18 +172,39 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
         nativeEvent: MouseEvent | React.PointerEvent<HTMLCanvasElement>;
       }>
     ) => {
-      const link = element.link!;
+      let link = element.link!;
+
+      const isDoubleChainLink = DOUBLE_CHAIN_LINK_REGEX.test(link);
+
+      if (isDoubleChainLink) {
+        const fileName = link.match(DOUBLE_CHAIN_LINK_REGEX)?.[1];
+        link = `obsidian://open?vault=${VAULT_NAME}&file=${fileName}`;
+      }
+
       const { nativeEvent } = event.detail;
       const isNewTab = nativeEvent.ctrlKey || nativeEvent.metaKey;
       const isNewWindow = nativeEvent.shiftKey;
       const isInternalLink =
-        link.startsWith("/") || link.includes(window.location.origin);
-      if (isInternalLink && !isNewTab && !isNewWindow) {
+        link.startsWith("/") ||
+        link.includes(window.location.origin) ||
+        link.startsWith("obsidian://");
+
+      console.log('link', link, isNewTab, isNewWindow);
+
+      if (isInternalLink && (isNewTab || isNewWindow)) {
         // signal that we're handling the redirect ourselves
         event.preventDefault();
         // do a custom redirect, such as passing to react-router
-        // ...
+
+        console.log('--- open inner link ---');
+
+        openFileInNewTab(link);
+
+        return;
       }
+
+      window.location.href = link;
+
     },
     []
   );
@@ -214,42 +222,24 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     window.alert(`Copied to clipboard as ${type} successfully`);
   };
 
-  const [pointerData, setPointerData] = useState<{
-    pointer: { x: number; y: number };
-    button: "down" | "up";
-    pointersMap: Gesture["pointers"];
-  } | null>(null);
+  // const [pointerData, setPointerData] = useState<{
+  //   pointer: { x: number; y: number };
+  //   button: "down" | "up";
+  //   pointersMap: Gesture["pointers"];
+  // } | null>(null);
 
-  const onPointerDown = (
-    activeTool: AppState["activeTool"],
-    pointerDownState: ExcalidrawPointerDownState
-  ) => {
-    if (activeTool.type === "custom" && activeTool.customType === "comment") {
-      const { x, y } = pointerDownState.origin;
-      setComment({ x, y, value: "" });
-    }
-  };
+  // const onPointerDown = (
+  //   activeTool: AppState["activeTool"],
+  //   pointerDownState: ExcalidrawPointerDownState
+  // ) => {
 
-  const rerenderCommentIcons = () => {
-    if (!excalidrawAPI) {
-      return false;
-    }
-    const commentIconsElements = appRef.current.querySelectorAll(
-      ".comment-icon"
-    ) as HTMLElement[];
-    commentIconsElements.forEach((ele) => {
-      const id = ele.id;
-      const appstate = excalidrawAPI.getAppState();
-      const { x, y } = sceneCoordsToViewportCoords(
-        { sceneX: commentIcons[id].x, sceneY: commentIcons[id].y },
-        appstate
-      );
-      ele.style.left = `${x - COMMENT_ICON_DIMENSION / 2 - appstate!.offsetLeft
-        }px`;
-      ele.style.top = `${y - COMMENT_ICON_DIMENSION / 2 - appstate!.offsetTop
-        }px`;
-    });
-  };
+  //   console.log('--- onPointerDown ---', activeTool, pointerDownState);
+
+  //   // if (activeTool.type === "custom" && activeTool.customType === "comment") {
+  //   //   const { x, y } = pointerDownState.origin;
+  //   //   setComment({ x, y, value: "" });
+  //   // }
+  // };
 
   const switchLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLangCode(e?.target?.value);
@@ -293,23 +283,29 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
         onChange={(elements, appState, files) => {
           onChange({ elements, appState, theme, langCode, files });
         }}
-        onPointerUpdate={(payload: {
-          pointer: { x: number; y: number };
-          button: "down" | "up";
-          pointersMap: Gesture["pointers"];
-        }) => setPointerData(payload)}
+        // onPointerUpdate={(payload: {
+        //   pointer: { x: number; y: number };
+        //   button: "down" | "up";
+        //   pointersMap: Gesture["pointers"];
+        // }) => {
+        //   console.log('--- onPointerUpdate ---', payload);
+        //   setPointerData(payload);
+        // }}
         viewModeEnabled={viewModeEnabled}
         zenModeEnabled={zenModeEnabled}
         gridModeEnabled={gridModeEnabled}
         theme={theme}
         langCode={langCode}
         name={fileName}
-        UIOptions={{ canvasActions: { loadScene: false } }}
-        renderTopRightUI={(isMobile: boolean, appState: UIAppState) => { return null; }}
+        // UIOptions={{ canvasActions: { loadScene: false } }}
+        // renderTopRightUI={(isMobile: boolean, appState: UIAppState) => { return null; }}
         onLinkOpen={onLinkOpen}
-        onPointerDown={onPointerDown}
-        onScrollChange={rerenderCommentIcons}
-      // onPaste={onPaste}
+      // onPointerDown={onPointerDown}
+      // onScrollChange={rerenderCommentIcons}
+      // onPaste={async (data: ClipboardData, event: ClipboardEvent | null) => {
+      //   console.log('--- onPaste ---', data, event);
+      //   return true;
+      // }}
       >
         {renderMenu()}
         <CustomWelcomeScreen />

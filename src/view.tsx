@@ -8,6 +8,8 @@ export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
 
 const DEFAULT_DATA = '{}';
 
+const FILE_BASENAME_REGEX = /file=(.+)/;
+
 export class ExcalidrawCnView extends TextFileView {
     constructor(leaf: WorkspaceLeaf) {
         super(leaf);
@@ -54,7 +56,7 @@ export class ExcalidrawCnView extends TextFileView {
         console.log('----------------------------');
     }
 
-    onunload(){
+    onunload() {
         console.log('--- onunload ---');
         this.root?.unmount();
     }
@@ -98,6 +100,19 @@ export class ExcalidrawCnView extends TextFileView {
         this.excalidrawCnAppRef = ref;
     }
 
+    async openFileInNewTab(linkText: string) {
+        const basename = linkText.match(FILE_BASENAME_REGEX)?.[1];
+
+        const files = this.app.vault.getFiles();
+        const file = files.find(_file => _file.basename === basename);
+
+        const leaf = this.app.workspace.getLeaf(true);
+
+        if (file) {
+            await leaf.openFile(file, { active: true });
+        }
+    }
+
     async render(file: TFile) {
 
         this.root = this.root || createRoot(this.containerEl.children[1]);;
@@ -119,6 +134,7 @@ export class ExcalidrawCnView extends TextFileView {
                     onChange={this.onChange.bind(this)}
                     dataSource={fileData}
                     fileName={this.file.name}
+                    openFileInNewTab={this.openFileInNewTab.bind(this)}
                 />
             </React.StrictMode>
         );
