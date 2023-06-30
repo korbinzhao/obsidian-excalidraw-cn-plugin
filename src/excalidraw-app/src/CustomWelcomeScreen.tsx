@@ -1,3 +1,4 @@
+import React from "react";
 import { WelcomeScreen, useI18n } from "@handraw/excalidraw";
 import { GithubIcon, TwitterIcon, shareWindows } from './icons/icons'
 
@@ -23,7 +24,7 @@ export default function CustomWelcomeScreen() {
           icon={GithubIcon}
           aria-label="GitHub"
           href="https://github.com/korbinzhao/excalidraw-cn">
-          {`GitHub -> give a star`} 
+          {`GitHub -> give a star`}
         </WelcomeScreen.Center.MenuItemLink>
         <WelcomeScreen.Center.MenuItemLink
           icon={TwitterIcon}

@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, MIME_TYPES } from "@handraw/excalidraw";
 import { ExcalidrawImperativeAPI } from "@handraw/excalidraw/types/types";
 

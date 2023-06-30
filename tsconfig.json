@@ -19,7 +19,8 @@
     ],
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "outDir": "./"
+    "outDir": "./",
+    "esModuleInterop": true,
   },
   "include": [
     "**/*.ts",
