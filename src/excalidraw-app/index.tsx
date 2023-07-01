@@ -331,7 +331,7 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
       // }}
       >
         {renderMenu()}
-        <CustomWelcomeScreen />
+        <CustomWelcomeScreen langCode={langCode} />
       </Excalidraw>
     </div>
   );

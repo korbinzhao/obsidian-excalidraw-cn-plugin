@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { WelcomeScreen, useI18n } from "@handraw/excalidraw";
 import { GithubIcon, TwitterIcon, shareWindows } from './icons/icons'
+import { setLanguage, getLanguageText } from './locales';
 
-export default function CustomWelcomeScreen() {
+interface Props {
+  langCode: string;
+}
+
+export default function CustomWelcomeScreen({ langCode}: Props) {
 
   const { t } = useI18n();
+
+  useEffect(() => {
+    setLanguage(langCode);
+  }, [langCode]);
 
   return <WelcomeScreen>
     <WelcomeScreen.Hints.MenuHint>
@@ -24,19 +33,19 @@ export default function CustomWelcomeScreen() {
           icon={GithubIcon}
           aria-label="GitHub"
           href="https://github.com/korbinzhao/excalidraw-cn">
-          {`GitHub -> give a star`}
+          {getLanguageText('welcome.github')}
         </WelcomeScreen.Center.MenuItemLink>
         <WelcomeScreen.Center.MenuItemLink
           icon={TwitterIcon}
           href="https://twitter.com/korbinzhao"
           aria-label="Twitter">
-          {`Twitter -> follow the author`}
+           {getLanguageText('welcome.twitter')}
         </WelcomeScreen.Center.MenuItemLink>
         <WelcomeScreen.Center.MenuItemLink
           icon={shareWindows}
           href="https://handraw.top"
           aria-label="handraw.top">
-          {`Visit the homepage for more`}
+           {getLanguageText('welcome.homepage')}
         </WelcomeScreen.Center.MenuItemLink>
       </WelcomeScreen.Center.Menu>
     </WelcomeScreen.Center>

@@ -101,6 +101,10 @@
 		.ToolIcon__icon svg {
 			fill: transparent;
 		}
+
+		.welcome-screen-menu-item{
+			height: 2.6rem;
+		}
 	}
 
 	.excalidraw .ToolIcon .ToolIcon_type_radio:checked+.ToolIcon__icon,
