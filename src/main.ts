@@ -1,4 +1,4 @@
-import { Plugin, Notice, TFile } from 'obsidian';
+import { Plugin, TFile } from 'obsidian';
 import { ExcalidrawCnView, VIEW_TYPE_EXCALIDRAW_CN } from './view';
 import { ICON_NAME, FILE_EXTENSION } from './constants';
 import { ExcaldirawCnSetting } from './excalidraw-app';

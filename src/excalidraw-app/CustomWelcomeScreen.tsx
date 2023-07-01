@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { WelcomeScreen, useI18n } from "@handraw/excalidraw";
-import { GithubIcon, TwitterIcon, shareWindows } from './icons/icons'
+import { GithubIcon, TwitterIcon, shareWindows, coffeeIcon } from './icons/icons'
 import { setLanguage, getLanguageText } from './locales';
 
 interface Props {
@@ -46,6 +46,12 @@ export default function CustomWelcomeScreen({ langCode}: Props) {
           href="https://handraw.top"
           aria-label="handraw.top">
            {getLanguageText('welcome.homepage')}
+        </WelcomeScreen.Center.MenuItemLink>
+        <WelcomeScreen.Center.MenuItemLink
+          icon={coffeeIcon}
+          href="https://afdian.net/a/wantian"
+          aria-label="Buy me a coffee">
+           {getLanguageText('welcome.coffee')}
         </WelcomeScreen.Center.MenuItemLink>
       </WelcomeScreen.Center.Menu>
     </WelcomeScreen.Center>

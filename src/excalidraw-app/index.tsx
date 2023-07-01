@@ -106,11 +106,7 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
   const [exportEmbedScene, setExportEmbedScene] = useState(false);
   const [theme, setTheme] = useState("light");
   const [isCollaborating, setIsCollaborating] = useState(false);
-  const [commentIcons, setCommentIcons] = useState<{ [id: string]: Comment }>(
-    {}
-  );
-  const [comment, setComment] = useState<Comment | null>(null);
-
+  
   const [langCode, setLangCode] = useState<string>('zh-CN');
 
   const initialStatePromiseRef = useRef<{
