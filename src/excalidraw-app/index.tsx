@@ -15,7 +15,7 @@ import {
   Footer,
   Sidebar,
   languages,
-  WelcomeScreen
+  WelcomeScreen,
 } from "@handraw/excalidraw";
 import {
   AppState,
@@ -29,7 +29,10 @@ import {
   BinaryFiles,
 } from "@handraw/excalidraw/types/types";
 
-import { NonDeletedExcalidrawElement, ExcalidrawElement } from "@handraw/excalidraw/types/element/types";
+import {
+  NonDeletedExcalidrawElement,
+  ExcalidrawElement
+} from "@handraw/excalidraw/types/element/types";
 import { ClipboardData } from '@handraw/excalidraw/types/clipboard';
 
 import { nanoid } from "nanoid";
@@ -106,8 +109,10 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
   const [exportEmbedScene, setExportEmbedScene] = useState(false);
   const [theme, setTheme] = useState("light");
   const [isCollaborating, setIsCollaborating] = useState(false);
-  
+
   const [langCode, setLangCode] = useState<string>('zh-CN');
+
+  const [libraryItems, setLiraryItems] = useState<LibraryItems | Promise<LibraryItems> | undefined>();
 
   const initialStatePromiseRef = useRef<{
     promise: ResolvablePromise<ExcalidrawInitialDataState | null>;
@@ -130,7 +135,7 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     try {
       dataSourceObj = JSON.parse(dataSourceText);
 
-      const { theme, langCode } = dataSourceObj;
+      const { theme, langCode, libraryItems } = dataSourceObj;
 
       if (theme) {
         setTheme(theme);
@@ -139,6 +144,8 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
       if (langCode) {
         setLangCode(langCode);
       }
+
+      setLiraryItems(libraryItems);
 
       // 将 appState.collaborators 从 object 类型转为 Map 类型
       if (dataSourceObj?.appState?.collaborators) {
@@ -222,24 +229,7 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     window.alert(`Copied to clipboard as ${type} successfully`);
   };
 
-  // const [pointerData, setPointerData] = useState<{
-  //   pointer: { x: number; y: number };
-  //   button: "down" | "up";
-  //   pointersMap: Gesture["pointers"];
-  // } | null>(null);
-
-  // const onPointerDown = (
-  //   activeTool: AppState["activeTool"],
-  //   pointerDownState: ExcalidrawPointerDownState
-  // ) => {
-
-  //   console.log('--- onPointerDown ---', activeTool, pointerDownState);
-
-  //   // if (activeTool.type === "custom" && activeTool.customType === "comment") {
-  //   //   const { x, y } = pointerDownState.origin;
-  //   //   setComment({ x, y, value: "" });
-  //   // }
-  // };
+  const onLiraryChange = useCallback((libraryItems: LibraryItems) => { setLiraryItems(libraryItems) }, []);
 
   const switchLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLangCode(e?.target?.value);
@@ -275,23 +265,6 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     );
   };
 
-  // const onExcalidrawChange = useCallback((elements: ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
-    
-  //   console.log('--- onExcalidrawChange ---', timerRef.current);
-    
-  //   if (timerRef.current) {
-  //     return;
-  //   }
-
-  //   const timeout = setTimeout(() => {
-  //     clearTimeout(timeout);
-  //     timerRef.current = undefined;
-  //     onChange({ elements, appState, theme, langCode, files });
-  //   }, WAIT_TIME);
-
-  //   timerRef.current = timeout;
-  // }, [timerRef.current])
-
   console.log('---- render excalidraw-app ---');
 
   return (
@@ -300,25 +273,16 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
         ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
         initialData={initialStatePromiseRef.current.promise}
         onChange={(elements: ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
-          onChange({ elements, appState, theme, langCode, files });
+          onChange({ elements, appState, theme, langCode, files, libraryItems });
         }}
-        // onPointerUpdate={(payload: {
-        //   pointer: { x: number; y: number };
-        //   button: "down" | "up";
-        //   pointersMap: Gesture["pointers"];
-        // }) => {
-        //   console.log('--- onPointerUpdate ---', payload);
-        //   setPointerData(payload);
-        // }}
         viewModeEnabled={viewModeEnabled}
         zenModeEnabled={zenModeEnabled}
         gridModeEnabled={gridModeEnabled}
         theme={theme}
         langCode={langCode}
         name={fileName}
-        // UIOptions={{ canvasActions: { loadScene: false } }}
-        // renderTopRightUI={(isMobile: boolean, appState: UIAppState) => { return null; }}
         onLinkOpen={onLinkOpen}
+        onLibraryChange={onLiraryChange}
       // onPointerDown={onPointerDown}
       // onScrollChange={rerenderCommentIcons}
       // onPaste={async (data: ClipboardData, event: ClipboardEvent | null) => {
