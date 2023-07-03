@@ -6,7 +6,7 @@
 
 Github 开源项目：[excalidraw-cn](https://github.com/korbinzhao/excalidraw-cn)，欢迎 Star。
 
-![](https://img.alicdn.com/imgextra/i1/O1CN01INRlor1LQhMfkh4jx_!!6000000001294-0-tps-5100-2816.jpg)
+![](https://img.alicdn.com/imgextra/i2/O1CN01PgmCbK1bFHLG85M7F_!!6000000003435-0-tps-2774-1532.jpg)
 
 
 # 使用方式
