@@ -4,12 +4,16 @@ import { createRoot, Root } from "react-dom/client";
 import ExcalidrawCnApp from './excalidraw-app';
 import { ExcalidrawDataSource } from './excalidraw-app';
 import { sendNotice } from './utils/notice';
+import { LibraryItems } from "@handraw/excalidraw/types/types";
+import _ from 'lodash';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
 
 const DEFAULT_DATA = '{}';
 
 const FILE_BASENAME_REGEX = /file=(.+)/;
+
+const LIBRARY_ITEMS_KEY = 'excalidraw_cn_library_items';
 
 export class ExcalidrawCnView extends TextFileView {
     constructor(leaf: WorkspaceLeaf) {
@@ -55,7 +59,9 @@ export class ExcalidrawCnView extends TextFileView {
         this.debounceSave();
     }
 
-
+    onLiraryChange(libraryItems: LibraryItems) {
+        localStorage.setItem(LIBRARY_ITEMS_KEY, JSON.stringify(libraryItems))
+    }
 
     async onLoadFile(file: TFile): Promise<void> {
 
@@ -112,17 +118,24 @@ export class ExcalidrawCnView extends TextFileView {
             return;
         }
 
-        console.log('--- save ---');
+        try {
+            console.log('--- save ---');
 
-        this.setViewData(data);
+            this.setViewData(data);
 
-        this.app.vault.modify(this.file, this.data);
+            this.app.vault.modify(this.file, this.data);
 
-        sendNotice('Saved!');
+            // sendNotice('Saved!');
 
-        if (clear) {
-            this.clear();
+            if (clear) {
+                this.clear();
+            }
+        } catch (err) {
+            console.error('Save failed:', err);
+            sendNotice('Save failed!')
         }
+
+
     }
 
     getExcalidrawCnAppRef(ref: any) {
@@ -142,15 +155,42 @@ export class ExcalidrawCnView extends TextFileView {
         }
     }
 
+    mergeLibraryItemsFromLocal(fileData: string) {
+        try {
+            const fileDataObj: ExcalidrawDataSource = JSON.parse(fileData);
+
+            const libraryItems = fileDataObj.libraryItems as LibraryItems || [];
+
+            const libraryItemsFromLocal = JSON.parse(localStorage.getItem(LIBRARY_ITEMS_KEY) || '[]');
+
+            console.log('--- libraryItems --', libraryItems)
+            console.log('--- libraryItemsFromLocal ---', libraryItemsFromLocal)
+
+            const mergedLibraryItems = _.uniqBy([...libraryItems, ...libraryItemsFromLocal], 'id');
+
+            fileDataObj.libraryItems = mergedLibraryItems;
+
+            return JSON.stringify(fileDataObj);
+
+           
+        } catch (err) {
+            console.error('mergeLibraryItemsFromLocal', err);
+        }
+
+        return fileData;
+    }
+
     async render(file: TFile) {
 
         this.root = this.root || createRoot(this.containerEl.children[1]);;
 
-        const fileData = await this.app.vault.process(file, data => data);
+        let fileData = await this.app.vault.process(file, data => data);
 
         if (!fileData) {
             return;
         }
+
+        fileData = this.mergeLibraryItemsFromLocal(fileData);
 
         console.log('--- render elements ---', JSON.parse(fileData).elements?.length, JSON.parse(fileData).files);
 
@@ -161,6 +201,7 @@ export class ExcalidrawCnView extends TextFileView {
                 <ExcalidrawCnApp
                     outputExcalidrawCnAppAPI={this.getExcalidrawCnAppRef.bind(this)}
                     onChange={this.onChange.bind(this)}
+                    onLiraryChange={this.onLiraryChange}
                     dataSource={fileData}
                     fileName={this.file.name}
                     openFileInNewTab={this.openFileInNewTab.bind(this)}

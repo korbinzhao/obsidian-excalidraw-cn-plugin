@@ -88,6 +88,7 @@ interface ExcalidrawAppProps {
   dataSource: string;
   fileName: string;
   onChange: (data: ExcalidrawDataSource) => void;
+  onLiraryChange: (libraryItems: LibraryItems) => void;
   outputExcalidrawCnAppAPI: (ref: any) => void;
   openFileInNewTab: (linkText: string) => void;
 }
@@ -98,7 +99,8 @@ export interface ExcaldirawCnSetting {
 
 const WAIT_TIME = 2000;
 
-function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidrawCnAppAPI, fileName, openFileInNewTab }: ExcalidrawAppProps) {
+function ExcalidrawCnApp({ dataSource: dataSourceText, onChange,
+  onLiraryChange, outputExcalidrawCnAppAPI, fileName, openFileInNewTab }: ExcalidrawAppProps) {
   const appRef = useRef<any>(null);
   const [viewModeEnabled, setViewModeEnabled] = useState(false);
   const [zenModeEnabled, setZenModeEnabled] = useState(false);
@@ -196,14 +198,10 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
         link.includes(window.location.origin) ||
         link.startsWith("obsidian://");
 
-      console.log('link', link, isNewTab, isNewWindow);
-
       if (isInternalLink && (isNewTab || isNewWindow)) {
         // signal that we're handling the redirect ourselves
         event.preventDefault();
         // do a custom redirect, such as passing to react-router
-
-        console.log('--- open inner link ---');
 
         openFileInNewTab(link);
 
@@ -229,7 +227,10 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     window.alert(`Copied to clipboard as ${type} successfully`);
   };
 
-  const onLiraryChange = useCallback((libraryItems: LibraryItems) => { setLiraryItems(libraryItems) }, []);
+  const _onLiraryChange = useCallback((newLibraryItems: LibraryItems) => {
+    setLiraryItems(newLibraryItems);
+    onLiraryChange(newLibraryItems);
+  }, []);
 
   const switchLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLangCode(e?.target?.value);
@@ -265,8 +266,6 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
     );
   };
 
-  console.log('---- render excalidraw-app ---');
-
   return (
     <div className={`excalidraw-cn-app theme-${theme}`} ref={appRef}>
       <Excalidraw
@@ -282,13 +281,7 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange, outputExcalidra
         langCode={langCode}
         name={fileName}
         onLinkOpen={onLinkOpen}
-        onLibraryChange={onLiraryChange}
-      // onPointerDown={onPointerDown}
-      // onScrollChange={rerenderCommentIcons}
-      // onPaste={async (data: ClipboardData, event: ClipboardEvent | null) => {
-      //   console.log('--- onPaste ---', data, event);
-      //   return true;
-      // }}
+        onLibraryChange={_onLiraryChange}
       >
         {renderMenu()}
         <CustomWelcomeScreen langCode={langCode} />
