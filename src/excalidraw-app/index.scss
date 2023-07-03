@@ -103,7 +103,7 @@
 
 		[data-radix-popper-content-wrapper]{
 			// 修复浮层定位问题
-			position: absolute;
+			position: absolute !important;
 		}
 	}
 
