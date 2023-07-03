@@ -43,6 +43,14 @@
 			font-weight: 400;
 		}
 
+		button {
+			box-shadow: none;
+		}
+
+		.dropdown-menu-item {
+			justify-content: left;
+		}
+
 		.switch-theme {
 			cursor: pointer;
 			width: 100%;
@@ -92,6 +100,11 @@
 		.welcome-screen-menu-item {
 			height: 2.6rem;
 		}
+
+		[data-radix-popper-content-wrapper]{
+			// 修复浮层定位问题
+			position: absolute;
+		}
 	}
 
 	.excalidraw .ToolIcon .ToolIcon_type_radio:checked+.ToolIcon__icon,
@@ -113,3 +126,6 @@
 	}
 
 }
+
+
+
