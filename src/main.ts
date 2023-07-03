@@ -31,8 +31,6 @@ export default class ExcalidrawCnPlugin extends Plugin {
 			const files = this.app.vault.getFiles();
 			const excalidrawCnFiles = files.filter(file => file.extension === FILE_EXTENSION);
 
-			console.log('excalidrawCnFiles', excalidrawCnFiles)
-
 			for await (const file of excalidrawCnFiles) {
 				const fileData = await this.app.vault.process(file, data => data);
 				const dataObj = JSON.parse(fileData);
@@ -53,15 +51,13 @@ export default class ExcalidrawCnPlugin extends Plugin {
 					const newFileData = JSON.stringify(dataObj);
 					await this.app.vault.modify(file, newFileData);
 
-					console.log(`sync file ${file.basename} done`, oldName, newName);
-
 					sendNotice(`Update ${matchCount} links in ${file.name}`)
 				}
 
 			}
 
 		} catch (err) {
-			console.log('sync new file name failed', err)
+			console.warn('sync new file name failed', err)
 		}
 
 	}
@@ -75,10 +71,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 
 			const oldName = oldPath.match(FILE_NAME_REGEX)?.[1];
 
-			console.log('file rename', file, oldName)
-
 			oldName && this.syncDoubleChainFileNameWhenRename(file.basename, oldName);
-
 		}));
 	}
 

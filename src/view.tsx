@@ -52,9 +52,6 @@ export class ExcalidrawCnView extends TextFileView {
 
     onChange(data: ExcalidrawDataSource | {}) {
         this.dataObj = data;
-        // this.requestSave();
-
-        console.log('--- onChange ---');
 
         this.debounceSave();
     }
@@ -64,34 +61,22 @@ export class ExcalidrawCnView extends TextFileView {
     }
 
     async onLoadFile(file: TFile): Promise<void> {
-
-        console.log('--- onLoadFile ---', file.path);
-
         this.file = file;
 
         this.render(file);
     }
 
     async onUnloadFile(file: TFile): Promise<void> {
-
-        console.log('--- onUnloadFile elements ---', JSON.parse(this.data).elements?.length, file.path);
-
         this.clear();
-
-        console.log('----------------------------');
     }
 
     onunload() {
-        console.log('--- onunload ---');
-
         this.clear();
 
         this.root?.unmount();
     }
 
     async onClose() {
-        console.log('--- onClose ---');
-
         this.root?.unmount();
     }
 
@@ -101,8 +86,6 @@ export class ExcalidrawCnView extends TextFileView {
 
     setViewData(data: string = DEFAULT_DATA, clear: boolean = false): void {
         this.data = data;
-
-        console.log('--- setViewData elements --', JSON.parse(data).elements?.length);
 
         if (clear) {
             this.clear();
@@ -119,13 +102,9 @@ export class ExcalidrawCnView extends TextFileView {
         }
 
         try {
-            console.log('--- save ---');
-
             this.setViewData(data);
 
             this.app.vault.modify(this.file, this.data);
-
-            // sendNotice('Saved!');
 
             if (clear) {
                 this.clear();
@@ -163,9 +142,6 @@ export class ExcalidrawCnView extends TextFileView {
 
             const libraryItemsFromLocal = JSON.parse(localStorage.getItem(LIBRARY_ITEMS_KEY) || '[]');
 
-            console.log('--- libraryItems --', libraryItems)
-            console.log('--- libraryItemsFromLocal ---', libraryItemsFromLocal)
-
             const mergedLibraryItems = _.uniqBy([...libraryItems, ...libraryItemsFromLocal], 'id');
 
             fileDataObj.libraryItems = mergedLibraryItems;
@@ -191,8 +167,6 @@ export class ExcalidrawCnView extends TextFileView {
         }
 
         fileData = this.mergeLibraryItemsFromLocal(fileData);
-
-        console.log('--- render elements ---', JSON.parse(fileData).elements?.length, JSON.parse(fileData).files);
 
         this.setViewData(fileData);
 
