@@ -261,7 +261,9 @@ function ExcalidrawCnApp({ dataSource: dataSourceText, onChange,
             })}
           </select>
         </MainMenu.ItemCustom>
-        <MainMenu.DefaultItems.ChangeCanvasBackground />
+        <MainMenu.ItemCustom>
+          <MainMenu.DefaultItems.ChangeCanvasBackground />
+        </MainMenu.ItemCustom>
       </MainMenu>
     );
   };

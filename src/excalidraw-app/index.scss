@@ -39,6 +39,11 @@
 	}
 
 	.excalidraw {
+		--default-button-size: 2rem !important;
+		--default-icon-size: 1rem !important;
+		--lg-button-size: 1.8rem !important;
+		--lg-icon-size: 1rem !important;
+
 		a {
 			font-weight: 400;
 		}
@@ -101,31 +106,42 @@
 			height: 2.6rem;
 		}
 
-		[data-radix-popper-content-wrapper]{
+		[data-radix-popper-content-wrapper] {
 			// 修复浮层定位问题
 			position: absolute !important;
 		}
-	}
 
-	.excalidraw .ToolIcon .ToolIcon_type_radio:checked+.ToolIcon__icon,
-	.excalidraw .ToolIcon .ToolIcon_type_checkbox:checked+.ToolIcon__icon {
-		background-color: #e3e2fe;
-	}
+		.dropdown-menu-item-custom {
+			text-align: left;
 
-	.excalidraw .App-toolbar .ToolIcon .ToolIcon_type_radio:checked+.ToolIcon__icon,
-	.excalidraw .App-toolbar .ToolIcon .ToolIcon_type_checkbox:checked+.ToolIcon__icon {
-		// --color-primary: #faa2c1;
-		// --color-primary-darker: #f783ac;
-		// --color-primary-darkest: #e64980;
-		// --color-primary-light: #fcc2d7;
-		--keybinding-color: #b8b8b8;
-	}
+			button {
+				justify-content: start;
+			}
+		}
 
-	.excalidraw .buttonList.buttonListIcon label svg {
-		padding: 0;
-	}
+		.color-picker__button {
+			margin: 0 2px;
+		}
 
+		.ToolIcon .ToolIcon_type_radio:checked+.ToolIcon__icon,
+		.ToolIcon .ToolIcon_type_checkbox:checked+.ToolIcon__icon {
+			background-color: #e3e2fe;
+		}
+
+		.App-toolbar .ToolIcon .ToolIcon_type_radio:checked+.ToolIcon__icon,
+		.App-toolbar .ToolIcon .ToolIcon_type_checkbox:checked+.ToolIcon__icon {
+			--keybinding-color: #b8b8b8;
+		}
+
+		.buttonList.buttonListIcon label svg {
+			padding: 0;
+		}
+
+	}
 }
 
-
-
+.excalidraw-modal-container {
+	button {
+		box-shadow: none;
+	}
+}
