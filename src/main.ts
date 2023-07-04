@@ -1,13 +1,11 @@
 import { Plugin, TFile } from 'obsidian';
 import { ExcalidrawCnView, VIEW_TYPE_EXCALIDRAW_CN } from './view';
 import { ICON_NAME, FILE_EXTENSION } from './constants';
-import { ExcaldirawCnSetting } from './excalidraw-app';
 import { ExcalidrawElement } from '@handraw/excalidraw/types/element/types';
-import { getLinkFileName, FILE_NAME_REGEX } from './excalidraw-app/utils/default';
+import { getLinkFileName, FILE_NAME_REGEX } from './utils/default';
 import { sendNotice } from './utils/notice';
 
 export default class ExcalidrawCnPlugin extends Plugin {
-	public settings: ExcaldirawCnSetting;
 
 	async onload() {
 		this.registerView(

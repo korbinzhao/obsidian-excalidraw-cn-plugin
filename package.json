@@ -24,6 +24,7 @@
 		"builtin-modules": "3.3.0",
 		"esbuild": "0.17.3",
 		"esbuild-sass-plugin": "2.10.0",
+		"gulp": "^4.0.2",
 		"nanoid": "4.0.0",
 		"obsidian": "latest",
 		"postcss": "8.4.24",
@@ -37,6 +38,7 @@
 	"dependencies": {
 		"@handraw/excalidraw": "1.0.0-alpha.2",
 		"clsx": "^1.2.1",
+		"handraw-materials": "^0.0.2-beta.0",
 		"nanoid": "4.0.0",
 		"open-color": "^1.9.1"
 	}

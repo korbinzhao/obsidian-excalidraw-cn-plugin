@@ -1,8 +1,0 @@
-export default {
-    welcome: {
-        github: '访问 Github，给个 Star 吧',
-        twitter: '关注作者获取最新产品动态',
-        homepage: '访问网页版提前使用最新功能',
-        coffee: '买杯咖啡/投喂猫粮'
-    }
-}

@@ -1,11 +1,16 @@
 import { TFile, TextFileView, WorkspaceLeaf } from "obsidian";
 import React from "react";
 import { createRoot, Root } from "react-dom/client";
-import ExcalidrawCnApp from './excalidraw-app';
-import { ExcalidrawDataSource } from './excalidraw-app';
+import { ExcalidrawApp } from 'handraw-materials';
+import { ExcalidrawDataSource } from 'handraw-materials/es/ExcalidrawApp/App';
 import { sendNotice } from './utils/notice';
 import { LibraryItems } from "@handraw/excalidraw/types/types";
+import {
+    NonDeletedExcalidrawElement,
+    ExcalidrawElement
+} from "@handraw/excalidraw/types/element/types";
 import _ from 'lodash';
+import { DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX, DOUBLE_CHAIN_LINK_AS_OBSIDIAN_LINK_REGEX, FILE_NAME_REGEX } from './utils/default';
 
 export const VIEW_TYPE_EXCALIDRAW_CN = "excalidraw_cn";
 
@@ -14,6 +19,8 @@ const DEFAULT_DATA = '{}';
 const FILE_BASENAME_REGEX = /file=(.+)/;
 
 const LIBRARY_ITEMS_KEY = 'excalidraw_cn_library_items';
+
+const VAULT_NAME = window.app.vault.getName();
 
 export class ExcalidrawCnView extends TextFileView {
     constructor(leaf: WorkspaceLeaf) {
@@ -117,10 +124,6 @@ export class ExcalidrawCnView extends TextFileView {
 
     }
 
-    getExcalidrawCnAppRef(ref: any) {
-        this.excalidrawCnAppRef = ref;
-    }
-
     async openFileInNewTab(linkText: string) {
         const basename = linkText.match(FILE_BASENAME_REGEX)?.[1];
 
@@ -134,26 +137,41 @@ export class ExcalidrawCnView extends TextFileView {
         }
     }
 
-    mergeLibraryItemsFromLocal(fileData: string) {
-        try {
-            const fileDataObj: ExcalidrawDataSource = JSON.parse(fileData);
+    onLinkOpen(
+        element: NonDeletedExcalidrawElement,
+        event: CustomEvent<{
+            nativeEvent: MouseEvent | React.PointerEvent<HTMLCanvasElement>;
+        }>
+    ) {
+        let link = element.link!;
 
-            const libraryItems = fileDataObj.libraryItems as LibraryItems || [];
+        const isDoubleChainLink = DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX.test(link);
 
-            const libraryItemsFromLocal = JSON.parse(localStorage.getItem(LIBRARY_ITEMS_KEY) || '[]');
-
-            const mergedLibraryItems = _.uniqBy([...libraryItems, ...libraryItemsFromLocal], 'id');
-
-            fileDataObj.libraryItems = mergedLibraryItems;
-
-            return JSON.stringify(fileDataObj);
-
-           
-        } catch (err) {
-            console.error('mergeLibraryItemsFromLocal', err);
+        if (isDoubleChainLink) {
+            const fileName = link.match(DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX)?.[1];
+            link = `obsidian://open?vault=${VAULT_NAME}&file=${fileName}`;
         }
 
-        return fileData;
+        const { nativeEvent } = event.detail;
+        const isNewTab = nativeEvent.ctrlKey || nativeEvent.metaKey;
+        const isNewWindow = nativeEvent.shiftKey;
+        const isInternalLink =
+            link.startsWith("/") ||
+            link.includes(window.location.origin) ||
+            link.startsWith("obsidian://");
+
+        if (isInternalLink && (isNewTab || isNewWindow)) {
+            // signal that we're handling the redirect ourselves
+            event.preventDefault();
+            // do a custom redirect, such as passing to react-router
+
+            this.openFileInNewTab(link);
+
+            return;
+        }
+
+        window.location.href = link;
+
     }
 
     async render(file: TFile) {
@@ -166,19 +184,15 @@ export class ExcalidrawCnView extends TextFileView {
             return;
         }
 
-        fileData = this.mergeLibraryItemsFromLocal(fileData);
-
         this.setViewData(fileData);
 
         this.root?.render(
             <React.StrictMode>
-                <ExcalidrawCnApp
-                    outputExcalidrawCnAppAPI={this.getExcalidrawCnAppRef.bind(this)}
+                <ExcalidrawApp
                     onChange={this.onChange.bind(this)}
-                    onLiraryChange={this.onLiraryChange}
                     dataSource={fileData}
-                    fileName={this.file.name}
-                    openFileInNewTab={this.openFileInNewTab.bind(this)}
+                    canvasName={this.file.name}
+                    onLinkOpen={this.onLinkOpen.bind(this)}
                 />
             </React.StrictMode>
         );

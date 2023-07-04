@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/joebon/.nvm/versions/node/v16.15.0/bin/node /Users/joebon/.yarn/bin/yarn.js add -D sass
+  /Users/joebon/.nvm/versions/node/v16.15.0/bin/node /Users/joebon/.yarn/bin/yarn.js
 
 PATH: 
   /Users/joebon/Library/pnpm:/Users/joebon/.yarn/bin:/Users/joebon/.config/yarn/global/node_modules/.bin:/Users/joebon/.nvm/versions/node/v16.15.0/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/joebon/.cargo/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin
@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: https://registry.npmjs.org/sass: ETIMEDOUT
+  Error: https://registry.npmjs.org/handraw-materials: ETIMEDOUT
       at Timeout._onTimeout (/Users/joebon/.yarn/lib/cli.js:141550:19)
       at listOnTimeout (node:internal/timers:559:17)
       at processTimers (node:internal/timers:502:7)
@@ -26,34 +26,42 @@ npm manifest:
   	"description": "支持中文手写效果的 Excalidraw。Excalidraw supporting Chinese hand write font.",
   	"main": "main.js",
   	"scripts": {
+  		"start": "yarn run dev",
   		"dev": "node esbuild.config.mjs",
-  		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+  		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production && gulp",
+  		"gulp": "gulp",
   		"version": "node version-bump.mjs && git add manifest.json versions.json"
   	},
   	"keywords": [],
   	"author": "",
   	"license": "MIT",
   	"devDependencies": {
-  		"@types/node": "^16.11.6",
-  		"@types/react": "^18.2.14",
-  		"@types/react-dom": "^18.2.6",
+  		"@types/lodash.throttle": "^4.1.7",
+  		"@types/node": "16.11.6",
+  		"@types/react": "18.2.14",
+  		"@types/react-dom": "18.2.6",
   		"@typescript-eslint/eslint-plugin": "5.29.0",
   		"@typescript-eslint/parser": "5.29.0",
+  		"autoprefixer": "10.4.14",
   		"builtin-modules": "3.3.0",
   		"esbuild": "0.17.3",
-  		"obsidian": "latest",
-  		"tslib": "2.4.0",
-  		"typescript": "4.7.4"
-  	},
-  	"dependencies": {
-  		"@types/react": "18.0.15",
-  		"@types/react-dom": "18.0.6",
+  		"esbuild-sass-plugin": "2.10.0",
   		"nanoid": "4.0.0",
+  		"obsidian": "latest",
+  		"postcss": "8.4.24",
   		"react": "18.2.0",
   		"react-dom": "18.2.0",
   		"react-scripts": "5.0.1",
-  		"typescript": "4.9.4",
-  		"sass": "1.63.6"
+  		"sass": "1.63.6",
+  		"tslib": "2.4.0",
+  		"typescript": "4.9.4"
+  	},
+  	"dependencies": {
+  		"@handraw/excalidraw": "1.0.0-alpha.2",
+  		"clsx": "^1.2.1",
+  		"handraw-materials": "^0.0.2-beta.0",
+  		"nanoid": "4.0.0",
+  		"open-color": "^1.9.1"
   	}
   }
 
@@ -1476,6 +1484,11 @@ Lockfile:
     resolved "https://registry.npmjs.org/@eslint/js/-/js-8.43.0.tgz#559ca3d9ddbd6bf907ad524320a0d14b85586af0"
     integrity sha512-s2UHCoiXfxMvmfzqoN+vrQ84ahUSYde9qNO1MdxmoEhyHWsfmwOpFlwYV+ePJEVc7gFnATGUi376WowX1N7tFg==
   
+  "@handraw/excalidraw@1.0.0-alpha.2", "@handraw/excalidraw@^1.0.0-alpha.2":
+    version "1.0.0-alpha.2"
+    resolved "https://registry.npmjs.org/@handraw/excalidraw/-/excalidraw-1.0.0-alpha.2.tgz#4bc9f256d17e4ce918b13de332566b289d6afd5e"
+    integrity sha512-rG43WmtrF+6eWr1Mr3Fhn7k83uXpChdQ4X0qXLJ19t5JkhvI5+E2FvBXniMm4PmecLfVubS0c+4nOanvFyK7sA==
+  
   "@humanwhocodes/config-array@^0.11.10":
     version "0.11.10"
     resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.10.tgz#5a3ffe32cc9306365fb3fd572596cd602d5e12d2"
@@ -2167,6 +2180,18 @@ Lockfile:
     resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
     integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
   
+  "@types/lodash.throttle@^4.1.7":
+    version "4.1.7"
+    resolved "https://registry.npmjs.org/@types/lodash.throttle/-/lodash.throttle-4.1.7.tgz#4ef379eb4f778068022310ef166625f420b6ba58"
+    integrity sha512-znwGDpjCHQ4FpLLx19w4OXDqq8+OvREa05H89obtSyXyOFKL3dDjCslsmfBz0T2FU8dmf5Wx1QvogbINiGIu9g==
+    dependencies:
+      "@types/lodash" "*"
+  
+  "@types/lodash@*":
+    version "4.14.195"
+    resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.195.tgz#bafc975b252eb6cea78882ce8a7b6bf22a6de632"
+    integrity sha512-Hwx9EUgdwf2GLarOjQp5ZH8ZmblzcbTBC2wtQWNKARBSxM9ezRIAUpeDTgoQRAFB0+8CNWXVA9+MaSOzOF3nPg==
+  
   "@types/mime@*":
     version "3.0.1"
     resolved "https://registry.npmjs.org/@types/mime/-/mime-3.0.1.tgz#5f8f2bca0a5863cb69bc0b0acd88c96cb1d4ae10"
@@ -2182,10 +2207,10 @@ Lockfile:
     resolved "https://registry.npmjs.org/@types/node/-/node-20.3.1.tgz#e8a83f1aa8b649377bb1fb5d7bac5cb90e784dfe"
     integrity sha512-EhcH/wvidPy1WeML3TtYFGR83UzjxeWRen9V402T8aUGYsCHOmfoisV3ZSg03gAFIbLq8TnWOJ0f4cALtnSEUg==
   
-  "@types/node@^16.11.6":
-    version "16.18.36"
-    resolved "https://registry.npmjs.org/@types/node/-/node-16.18.36.tgz#0db5d7efc4760d36d0d1d22c85d1a53accd5dc27"
-    integrity sha512-8egDX8dE50XyXWH6C6PRCNkTP106DuUrvdrednFouDSmCi7IOvrqr0frznfZaHifHH/3aq/7a7v9N4wdXMqhBQ==
+  "@types/node@16.11.6":
+    version "16.11.6"
+    resolved "https://registry.npmjs.org/@types/node/-/node-16.11.6.tgz#6bef7a2a0ad684cf6e90fcfe31cecabd9ce0a3ae"
+    integrity sha512-ua7PgUoeQFjmWPcoo9khiPum3Pd60k4/2ZGXt18sm2Slk0W0xZTqt5Y0Ny1NyBiN1EVQ/+FaF9NcY4Qe6rwk5w==
   
   "@types/parse-json@^4.0.0":
     version "4.0.0"
@@ -2217,26 +2242,17 @@ Lockfile:
     resolved "https://registry.npmjs.org/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
     integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
   
-  "@types/react-dom@18.0.6":
-    version "18.0.6"
-    resolved "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.0.6.tgz#36652900024842b74607a17786b6662dd1e103a1"
-    integrity sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==
+  "@types/react-dom@18.2.6":
+    version "18.2.6"
+    resolved "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.2.6.tgz#ad621fa71a8db29af7c31b41b2ea3d8a6f4144d1"
+    integrity sha512-2et4PDvg6PVCyS7fuTc4gPoksV58bW0RwSxWKcPRcHZf0PRUGq03TKcD/rUHe3azfV6/5/biUBJw+HhCQjaP0A==
     dependencies:
       "@types/react" "*"
   
-  "@types/react@*":
+  "@types/react@*", "@types/react@18.2.14":
     version "18.2.14"
     resolved "https://registry.npmjs.org/@types/react/-/react-18.2.14.tgz#fa7a6fecf1ce35ca94e74874f70c56ce88f7a127"
     integrity sha512-A0zjq+QN/O0Kpe30hA1GidzyFjatVvrpIvWLxD+xv67Vt91TWWgco9IvrJBkeyHm1trGaFS/FSGqPlhyeZRm0g==
-    dependencies:
-      "@types/prop-types" "*"
-      "@types/scheduler" "*"
-      csstype "^3.0.2"
-  
-  "@types/react@18.0.15":
-    version "18.0.15"
-    resolved "https://registry.npmjs.org/@types/react/-/react-18.0.15.tgz#d355644c26832dc27f3e6cbf0c4f4603fc4ab7fe"
-    integrity sha512-iz3BtLuIYH1uWdsv6wXYdhozhqj20oD4/Hk2DNXIn1kFsmp9x8d9QB6FnPhfkbhd2PgEONt9Q1x/ebkwjfFLow==
     dependencies:
       "@types/prop-types" "*"
       "@types/scheduler" "*"
@@ -2924,7 +2940,7 @@ Lockfile:
     resolved "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
     integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
   
-  autoprefixer@^10.4.13:
+  autoprefixer@10.4.14, autoprefixer@^10.4.13:
     version "10.4.14"
     resolved "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.14.tgz#e28d49902f8e759dd25b153264e862df2705f79d"
     integrity sha512-FQzyfOsTlwVzjHxKEqRIAdJx9niO6VCBCoEwax/VLSoQF29ggECcPuBqUMZ+u8jCZOPSy8b8/8KnuFbp0SaFZQ==
@@ -3309,7 +3325,7 @@ Lockfile:
     resolved "https://registry.npmjs.org/check-types/-/check-types-11.2.2.tgz#7afc0b6a860d686885062f2dba888ba5710335b4"
     integrity sha512-HBiYvXvn9Z70Z88XKjz3AEKd4HJhBXsa3j7xFnITAzoS8+q6eIGi8qDB8FKPBAjtuxjI/zFpwuiCb8oDtKOYrA==
   
-  chokidar@^3.4.2, chokidar@^3.5.3:
+  "chokidar@>=3.0.0 <4.0.0", chokidar@^3.4.2, chokidar@^3.5.3:
     version "3.5.3"
     resolved "https://registry.npmjs.org/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
     integrity sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==
@@ -3354,6 +3370,11 @@ Lockfile:
       string-width "^4.2.0"
       strip-ansi "^6.0.0"
       wrap-ansi "^7.0.0"
+  
+  clsx@^1.2.1:
+    version "1.2.1"
+    resolved "https://registry.npmjs.org/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
+    integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
   
   co@^4.6.0:
     version "4.6.0"
@@ -4162,6 +4183,14 @@ Lockfile:
       is-callable "^1.1.4"
       is-date-object "^1.0.1"
       is-symbol "^1.0.2"
+  
+  esbuild-sass-plugin@2.10.0:
+    version "2.10.0"
+    resolved "https://registry.npmjs.org/esbuild-sass-plugin/-/esbuild-sass-plugin-2.10.0.tgz#002950a4d2d5840143218f8ba65d7f7bf1119ecc"
+    integrity sha512-STv849QGT8g77RRFmroSt4VBVKjv+dypKcO4aWz8IP4G5JbRH0KC0+B8ODuzlUNu9R5MbkGcev/62RDP/JcZ2Q==
+    dependencies:
+      resolve "^1.22.2"
+      sass "^1.63.0"
   
   esbuild@0.17.3:
     version "0.17.3"
@@ -4994,6 +5023,16 @@ Lockfile:
     resolved "https://registry.npmjs.org/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"
     integrity sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==
   
+  handraw-materials@^0.0.1:
+    version "0.0.1"
+    resolved "https://registry.npmjs.org/handraw-materials/-/handraw-materials-0.0.1.tgz#141c2b693ae459ed925e74422d2f2f271176d493"
+    integrity sha512-pXy5cNvPZVpqjyHgot3HAUd3C6BQVSjOSWCHpvA5I1e6txt3rzg4Qn4cRDkZTB+xA2gmNe0zofiQW/dXx38tXg==
+    dependencies:
+      "@handraw/excalidraw" "^1.0.0-alpha.2"
+      clsx "^1.2.1"
+      lodash "^4.17.21"
+      open-color "^1.9.1"
+  
   harmony-reflect@^1.4.6:
     version "1.6.2"
     resolved "https://registry.npmjs.org/harmony-reflect/-/harmony-reflect-1.6.2.tgz#31ecbd32e648a34d030d86adb67d4d47547fe710"
@@ -5229,6 +5268,11 @@ Lockfile:
     version "9.0.21"
     resolved "https://registry.npmjs.org/immer/-/immer-9.0.21.tgz#1e025ea31a40f24fb064f1fef23e931496330176"
     integrity sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==
+  
+  immutable@^4.0.0:
+    version "4.3.0"
+    resolved "https://registry.npmjs.org/immutable/-/immutable-4.3.0.tgz#eb1738f14ffb39fd068b1dbe1296117484dd34be"
+    integrity sha512-0AOCmOip+xgJwEVTQj1EfiDDOkPmuyllDuTuEX+DDXUgapLAsBIfkg3sxCYyCEA8mQqZrrxPUGjcOQ2JS3WLkg==
   
   import-fresh@^3.0.0, import-fresh@^3.1.0, import-fresh@^3.2.1:
     version "3.3.0"
@@ -6709,6 +6753,11 @@ Lockfile:
     dependencies:
       mimic-fn "^2.1.0"
   
+  open-color@^1.9.1:
+    version "1.9.1"
+    resolved "https://registry.npmjs.org/open-color/-/open-color-1.9.1.tgz#a6e6328f60eff7aa60e3e8fcfa50f53ff3eece35"
+    integrity sha512-vCseG/EQ6/RcvxhUcGJiHViOgrtz4x0XbZepXvKik66TMGkvbmjeJrKFyBEx6daG5rNyyd14zYXhz0hZVwQFOw==
+  
   open@^8.0.9, open@^8.4.0:
     version "8.4.2"
     resolved "https://registry.npmjs.org/open/-/open-8.4.2.tgz#5b5ffe2a8f793dcd2aad73e550cb87b59cb084f9"
@@ -7447,15 +7496,7 @@ Lockfile:
     resolved "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz#723c09920836ba6d3e5af019f92bc0971c02e514"
     integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
   
-  postcss@^7.0.35:
-    version "7.0.39"
-    resolved "https://registry.npmjs.org/postcss/-/postcss-7.0.39.tgz#9624375d965630e2e1f2c02a935c82a59cb48309"
-    integrity sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==
-    dependencies:
-      picocolors "^0.2.1"
-      source-map "^0.6.1"
-  
-  postcss@^8.3.5, postcss@^8.4.21, postcss@^8.4.23, postcss@^8.4.4:
+  postcss@8.4.24, postcss@^8.3.5, postcss@^8.4.21, postcss@^8.4.23, postcss@^8.4.4:
     version "8.4.24"
     resolved "https://registry.npmjs.org/postcss/-/postcss-8.4.24.tgz#f714dba9b2284be3cc07dbd2fc57ee4dc972d2df"
     integrity sha512-M0RzbcI0sO/XJNucsGjvWU9ERWxb/ytp1w6dKtxTKgixdtQDq4rmx/g8W1hnaheq9jgwL/oyEdH5Bc4WwJKMqg==
@@ -7463,6 +7504,14 @@ Lockfile:
       nanoid "^3.3.6"
       picocolors "^1.0.0"
       source-map-js "^1.0.2"
+  
+  postcss@^7.0.35:
+    version "7.0.39"
+    resolved "https://registry.npmjs.org/postcss/-/postcss-7.0.39.tgz#9624375d965630e2e1f2c02a935c82a59cb48309"
+    integrity sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==
+    dependencies:
+      picocolors "^0.2.1"
+      source-map "^0.6.1"
   
   prelude-ls@^1.2.1:
     version "1.2.1"
@@ -8016,6 +8065,15 @@ Lockfile:
       klona "^2.0.4"
       neo-async "^2.6.2"
   
+  sass@1.63.6, sass@^1.63.0:
+    version "1.63.6"
+    resolved "https://registry.npmjs.org/sass/-/sass-1.63.6.tgz#481610e612902e0c31c46b46cf2dad66943283ea"
+    integrity sha512-MJuxGMHzaOW7ipp+1KdELtqKbfAWbH7OLIdoSMnVe3EXPMTmxTmlaZDCTsgIpPCs3w99lLo9/zDKkOrJuT5byw==
+    dependencies:
+      chokidar ">=3.0.0 <4.0.0"
+      immutable "^4.0.0"
+      source-map-js ">=0.6.2 <2.0.0"
+  
   sax@~1.2.4:
     version "1.2.4"
     resolved "https://registry.npmjs.org/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
@@ -8222,7 +8280,7 @@ Lockfile:
     resolved "https://registry.npmjs.org/source-list-map/-/source-list-map-2.0.1.tgz#3993bd873bfc48479cca9ea3a547835c7c154b34"
     integrity sha512-qnQ7gVMxGNxsiL4lEuJwe/To8UnK7fAnmbGEEH8RpLouuKbeEm0lhbQVFIrNSuB+G7tVrAlVsZgETT5nljf+Iw==
   
-  source-map-js@^1.0.1, source-map-js@^1.0.2:
+  "source-map-js@>=0.6.2 <2.0.0", source-map-js@^1.0.1, source-map-js@^1.0.2:
     version "1.0.2"
     resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
     integrity sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==

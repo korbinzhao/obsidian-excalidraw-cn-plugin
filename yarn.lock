@@ -1418,6 +1418,11 @@
   resolved "https://registry.npmjs.org/@handraw/excalidraw/-/excalidraw-1.0.0-alpha.2.tgz#4bc9f256d17e4ce918b13de332566b289d6afd5e"
   integrity sha512-rG43WmtrF+6eWr1Mr3Fhn7k83uXpChdQ4X0qXLJ19t5JkhvI5+E2FvBXniMm4PmecLfVubS0c+4nOanvFyK7sA==
 
+"@handraw/excalidraw@^1.0.0-alpha.5":
+  version "1.0.0-alpha.5"
+  resolved "https://registry.npmjs.org/@handraw/excalidraw/-/excalidraw-1.0.0-alpha.5.tgz#cf6c7a59e63d4445bec297d63587ca08139b7b9b"
+  integrity sha512-sgmdVDqyMSdpsNfTPbJ7LlfZ/8YzeQvKaeRq1Y/Mb2rS/Ry50bkSMvzNB0W1Id2zQDy7bppeNXb1B6tK+r6Ecw==
+
 "@humanwhocodes/config-array@^0.11.10":
   version "0.11.10"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.10.tgz#5a3ffe32cc9306365fb3fd572596cd602d5e12d2"
@@ -5704,6 +5709,16 @@ handle-thing@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npmjs.org/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"
   integrity sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==
+
+handraw-materials@^0.0.2-beta.0:
+  version "0.0.2-beta.0"
+  resolved "https://registry.npmjs.org/handraw-materials/-/handraw-materials-0.0.2-beta.0.tgz#cf02d1adaa0ad2e29a3428b3d8a42b23d68438e1"
+  integrity sha512-sBRLAT5ycB5Ysg6835/VCwsqRlnvABpL1rQtZzQH36ENau7Bwb8mNbESnQy5bx6MqhUHcIymE2CTiaedBwSdug==
+  dependencies:
+    "@handraw/excalidraw" "^1.0.0-alpha.5"
+    clsx "^1.2.1"
+    lodash "^4.17.21"
+    open-color "^1.9.1"
 
 harmony-reflect@^1.4.6:
   version "1.6.2"
