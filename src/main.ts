@@ -36,7 +36,10 @@ export default class ExcalidrawCnPlugin extends Plugin {
 				let matchCount = 0;
 
 				dataObj.elements = dataObj.elements.map((element: ExcalidrawElement) => {
-					if (element.link && getLinkFileName(element.link) === oldName) {
+					// 此处 fileName 可能带后缀，可能不带后缀，需要做情况兼容，如果不带后缀，统一做 md 文件处理
+					const fileName = element.link && getLinkFileName(element.link);
+
+					if (fileName === oldName || `${fileName}.md` === oldName) {
 						matchCount++;
 						const link = `[[${newName}]]`
 						return { ...element, link };
@@ -67,9 +70,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 				return;
 			}
 
-			const oldName = oldPath.match(FILE_NAME_REGEX)?.[1];
-
-			oldName && this.syncDoubleChainFileNameWhenRename(file.basename, oldName);
+			oldPath && this.syncDoubleChainFileNameWhenRename(file.name, oldPath);
 		}));
 	}
 

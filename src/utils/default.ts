@@ -30,7 +30,5 @@ export const isExcalidrawCnFile = (file: TFile) => {
 }
 
 export const getLinkFileName = (linkText: string) => {
-    const fileName = linkText?.match(DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX)?.[1] || linkText?.match(DOUBLE_CHAIN_LINK_AS_OBSIDIAN_LINK_REGEX)?.[1];
-
-    return fileName && FILE_NAME_REGEX.test(fileName) ? fileName?.match(FILE_NAME_REGEX)?.[1] : fileName;
+    return linkText?.match(DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX)?.[1] || linkText?.match(DOUBLE_CHAIN_LINK_AS_OBSIDIAN_LINK_REGEX)?.[1];
 }
