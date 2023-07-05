@@ -44,7 +44,10 @@ Windows:
 ![](https://img.alicdn.com/imgextra/i3/O1CN01LyBU6b1HRpszh2SIH_!!6000000000755-2-tps-1314-524.png)
 
 # 网页版
-你也可以访问网页版 [Handraw](https://handraw.top/)，无需安装即可免费使用。
+你也可以访问网页版 [handraw.top](https://handraw.top/)，无需安装即可免费使用。
+
+# 问题反馈
+插件使用过程中问题欢迎反馈到 [issues](https://github.com/korbinzhao/obsidian-excalidraw-cn-plugin/issues)。
 
 ## 投喂猫粮
 

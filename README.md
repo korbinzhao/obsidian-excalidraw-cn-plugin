@@ -46,8 +46,11 @@ Windows:
 ![](https://img.alicdn.com/imgextra/i3/O1CN01LyBU6b1HRpszh2SIH_!!6000000000755-2-tps-1314-524.png)
 
 
-# website
+# Website
 You can also visit the website [handraw.top](https://handraw.top/) to use free.
+
+# Feedback
+If you have any problem or suggestion, welcome to send your feedback to [issues](https://github.com/korbinzhao/obsidian-excalidraw-cn-plugin/issues)。
 
 ## Feed my cat
 
