@@ -47,7 +47,7 @@ Windows:
 你也可以访问网页版 [handraw.top](https://handraw.top/)，无需安装即可免费使用。
 
 # 问题反馈
-插件使用过程中问题欢迎反馈到 [issues](https://github.com/korbinzhao/obsidian-excalidraw-cn-plugin/issues)。
+有任何问题或者建议，欢迎反馈到 [issues](https://github.com/korbinzhao/obsidian-excalidraw-cn-plugin/issues)。
 
 ## 投喂猫粮
 
