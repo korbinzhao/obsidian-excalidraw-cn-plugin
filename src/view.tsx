@@ -2,13 +2,8 @@ import { TFile, TextFileView, WorkspaceLeaf } from "obsidian";
 import React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { ExcalidrawApp } from 'handraw-materials';
-import { ExcalidrawDataSource } from 'handraw-materials/es/ExcalidrawApp/App';
+import { ExcalidrawDataSource, NonDeletedExcalidrawElement } from 'handraw-materials/es/ExcalidrawApp/types';
 import { sendNotice } from './utils/notice';
-import { LibraryItems } from "@handraw/excalidraw/types/types";
-import {
-    NonDeletedExcalidrawElement,
-    ExcalidrawElement
-} from "@handraw/excalidraw/types/element/types";
 import _ from 'lodash';
 import { DOUBLE_CHAIN_LINK_WITH_SQUARE_BRACKETS_REGEX, DOUBLE_CHAIN_LINK_AS_OBSIDIAN_LINK_REGEX, FILE_NAME_REGEX } from './utils/default';
 
@@ -61,10 +56,6 @@ export class ExcalidrawCnView extends TextFileView {
         this.dataObj = data;
 
         this.debounceSave();
-    }
-
-    onLiraryChange(libraryItems: LibraryItems) {
-        localStorage.setItem(LIBRARY_ITEMS_KEY, JSON.stringify(libraryItems))
     }
 
     async onLoadFile(file: TFile): Promise<void> {

@@ -1,8 +1,8 @@
 import { Plugin, TFile } from 'obsidian';
 import { ExcalidrawCnView, VIEW_TYPE_EXCALIDRAW_CN } from './view';
 import { ICON_NAME, FILE_EXTENSION } from './constants';
-import { ExcalidrawElement } from '@handraw/excalidraw/types/element/types';
-import { getLinkFileName, FILE_NAME_REGEX } from './utils/default';
+import { ExcalidrawElement } from 'handraw-materials/es/ExcalidrawApp/types';
+import { getLinkFileName } from './utils/default';
 import { sendNotice } from './utils/notice';
 
 export default class ExcalidrawCnPlugin extends Plugin {

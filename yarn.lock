@@ -1413,11 +1413,6 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.43.0.tgz#559ca3d9ddbd6bf907ad524320a0d14b85586af0"
   integrity sha512-s2UHCoiXfxMvmfzqoN+vrQ84ahUSYde9qNO1MdxmoEhyHWsfmwOpFlwYV+ePJEVc7gFnATGUi376WowX1N7tFg==
 
-"@handraw/excalidraw@1.0.0-alpha.2":
-  version "1.0.0-alpha.2"
-  resolved "https://registry.npmjs.org/@handraw/excalidraw/-/excalidraw-1.0.0-alpha.2.tgz#4bc9f256d17e4ce918b13de332566b289d6afd5e"
-  integrity sha512-rG43WmtrF+6eWr1Mr3Fhn7k83uXpChdQ4X0qXLJ19t5JkhvI5+E2FvBXniMm4PmecLfVubS0c+4nOanvFyK7sA==
-
 "@handraw/excalidraw@^1.0.0-alpha.5":
   version "1.0.0-alpha.5"
   resolved "https://registry.npmjs.org/@handraw/excalidraw/-/excalidraw-1.0.0-alpha.5.tgz#cf6c7a59e63d4445bec297d63587ca08139b7b9b"
@@ -2114,7 +2109,7 @@
   resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
-"@types/lodash.throttle@^4.1.7":
+"@types/lodash.throttle@4.1.7":
   version "4.1.7"
   resolved "https://registry.npmjs.org/@types/lodash.throttle/-/lodash.throttle-4.1.7.tgz#4ef379eb4f778068022310ef166625f420b6ba58"
   integrity sha512-znwGDpjCHQ4FpLLx19w4OXDqq8+OvREa05H89obtSyXyOFKL3dDjCslsmfBz0T2FU8dmf5Wx1QvogbINiGIu9g==
@@ -5681,7 +5676,7 @@ gulp-cli@^2.2.0:
     v8flags "^3.2.0"
     yargs "^7.1.0"
 
-gulp@^4.0.2:
+gulp@4.0.2:
   version "4.0.2"
   resolved "https://registry.npmjs.org/gulp/-/gulp-4.0.2.tgz#543651070fd0f6ab0a0650c6a3e6ff5a7cb09caa"
   integrity sha512-dvEs27SCZt2ibF29xYgmnwwCYZxdxhQ/+LFWlbAW8y7jt68L/65402Lz3+CKy0Ov4rOs+NERmDq7YlZaDqUIfA==
@@ -5710,10 +5705,10 @@ handle-thing@^2.0.0:
   resolved "https://registry.npmjs.org/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"
   integrity sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==
 
-handraw-materials@^0.0.2-beta.0:
-  version "0.0.2-beta.0"
-  resolved "https://registry.npmjs.org/handraw-materials/-/handraw-materials-0.0.2-beta.0.tgz#cf02d1adaa0ad2e29a3428b3d8a42b23d68438e1"
-  integrity sha512-sBRLAT5ycB5Ysg6835/VCwsqRlnvABpL1rQtZzQH36ENau7Bwb8mNbESnQy5bx6MqhUHcIymE2CTiaedBwSdug==
+handraw-materials@0.0.2-beta.1:
+  version "0.0.2-beta.1"
+  resolved "https://registry.npmjs.org/handraw-materials/-/handraw-materials-0.0.2-beta.1.tgz#6658848605ffa4c69590aa8768db7fa76e7bd48d"
+  integrity sha512-5WmvIC643fMJWSVWIyjIJcRNIIADNI0xrudJx+inFyZKX1hLfRMx0JJ/nOpF6e/uL4RSKeN0evGCtFYuo8g+WQ==
   dependencies:
     "@handraw/excalidraw" "^1.0.0-alpha.5"
     clsx "^1.2.1"
@@ -7589,11 +7584,6 @@ nan@^2.12.1:
   version "2.17.0"
   resolved "https://registry.npmjs.org/nan/-/nan-2.17.0.tgz#c0150a2368a182f033e9aa5195ec76ea41a199cb"
   integrity sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==
-
-nanoid@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/nanoid/-/nanoid-4.0.0.tgz#6e144dee117609232c3f415c34b0e550e64999a5"
-  integrity sha512-IgBP8piMxe/gf73RTQx7hmnhwz0aaEXYakvqZyE302IXW3HyVNhdNGC+O2MwMAVhLEnvXlvKtGbtJf6wvHihCg==
 
 nanoid@^3.3.6:
   version "3.3.6"
