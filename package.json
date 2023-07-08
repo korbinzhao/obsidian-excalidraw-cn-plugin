@@ -35,6 +35,6 @@
 		"typescript": "4.9.4"
 	},
 	"dependencies": {
-		"handraw-materials": "0.0.2-beta.1"
+		"handraw-materials": "0.0.2-beta.2"
 	}
 }

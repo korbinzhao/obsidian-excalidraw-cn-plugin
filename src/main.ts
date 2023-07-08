@@ -2,7 +2,7 @@ import { Plugin, TFile } from 'obsidian';
 import { ExcalidrawCnView, VIEW_TYPE_EXCALIDRAW_CN } from './view';
 import { ICON_NAME, FILE_EXTENSION } from './constants';
 import { ExcalidrawElement } from 'handraw-materials/es/ExcalidrawApp/types';
-import { getLinkFileName } from './utils/default';
+import { getLinkFileName } from './utils/file';
 import { sendNotice } from './utils/notice';
 
 export default class ExcalidrawCnPlugin extends Plugin {
@@ -30,7 +30,7 @@ export default class ExcalidrawCnPlugin extends Plugin {
 			const excalidrawCnFiles = files.filter(file => file.extension === FILE_EXTENSION);
 
 			for await (const file of excalidrawCnFiles) {
-				const fileData = await this.app.vault.process(file, data => data);
+				const fileData = await this.app.vault.read(file);
 				const dataObj = JSON.parse(fileData);
 
 				let matchCount = 0;
@@ -72,10 +72,6 @@ export default class ExcalidrawCnPlugin extends Plugin {
 
 			oldPath && this.syncDoubleChainFileNameWhenRename(file.name, oldPath);
 		}));
-	}
-
-	onunload() {
-		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXCALIDRAW_CN);
 	}
 
 	public async createAndOpenDrawing(): Promise<string> {
