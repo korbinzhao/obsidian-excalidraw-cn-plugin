@@ -17,7 +17,7 @@ Github OpenSource Projects（**:point_right: Give a Star :star:**）:
 # Features
 * [x] Supports all latest features of Excalidraw;
 * [x] Support Chines hand write font by default;
-* [x] Support double chain in Obsidian;
+* [x] Support double links in Obsidian;
 * [ ] Support custom fonts;
 * [ ] Support table card;
 * [ ] Support mind map card;
@@ -50,7 +50,7 @@ Windows:
 You can also visit the website [handraw.top](https://handraw.top/) to use free.
 
 # Feedback
-If you have any problem or suggestion, welcome to send your feedback to [issues](https://github.com/korbinzhao/obsidian-excalidraw-cn-plugin/issues)。
+If you have any problem or suggestion, welcome to send your feedback to [issues](https://github.com/korbinzhao/obsidian-excalidraw-cn-plugin/issues).
 
 ## Feed my cat
 
