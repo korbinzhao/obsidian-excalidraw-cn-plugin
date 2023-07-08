@@ -5705,10 +5705,10 @@ handle-thing@^2.0.0:
   resolved "https://registry.npmjs.org/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"
   integrity sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==
 
-handraw-materials@0.0.2-beta.1:
-  version "0.0.2-beta.1"
-  resolved "https://registry.npmjs.org/handraw-materials/-/handraw-materials-0.0.2-beta.1.tgz#6658848605ffa4c69590aa8768db7fa76e7bd48d"
-  integrity sha512-5WmvIC643fMJWSVWIyjIJcRNIIADNI0xrudJx+inFyZKX1hLfRMx0JJ/nOpF6e/uL4RSKeN0evGCtFYuo8g+WQ==
+handraw-materials@0.0.2-beta.2:
+  version "0.0.2-beta.2"
+  resolved "https://registry.npmjs.org/handraw-materials/-/handraw-materials-0.0.2-beta.2.tgz#8499cf980a762b2ee4d36bf67481af886fec0412"
+  integrity sha512-rsvba72xu+ahoSrIbXA7eOIZtLr9obi1TuOmR/n6wuvJn4nz3OMe24c5VJjVG7roY0U9P+xD+q9D+g6jWhjaoQ==
   dependencies:
     "@handraw/excalidraw" "^1.0.0-alpha.5"
     clsx "^1.2.1"
